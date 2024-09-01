@@ -1,0 +1,5 @@
+candidateServiceImpl.ts
+me/gaga/springreactvaadin/entities/Candidate.ts
+connect-client.default.ts
+endpoints.ts
+me/gaga/springreactvaadin/entities/CandidateModel.ts

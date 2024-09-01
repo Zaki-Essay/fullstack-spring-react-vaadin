@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "D:/project/spring-react-vaadin/./src/main/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "D:/project/spring-react-vaadin/./src/main/frontend/generated/jar-resources",
+  "staticOutput": "D:/project/spring-react-vaadin/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "D:\\project\\spring-react-vaadin\\target\\classes\\META-INF\\VAADIN\\config",
+  "frontendBundleOutput": "D:\\project\\spring-react-vaadin\\target\\classes\\META-INF\\VAADIN\\webapp",
+  "devBundleOutput": "D:/project/spring-react-vaadin/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "D:/project/spring-react-vaadin/target/dev-bundle/config",
+  "jarResourcesFolder": "D:/project/spring-react-vaadin/./src/main/frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "D:\\project\\spring-react-vaadin\\target\\sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}

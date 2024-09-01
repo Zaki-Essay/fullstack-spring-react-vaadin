@@ -1,0 +1,135 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Hilla Application",
+    "version" : "1.0.0"
+  },
+  "servers" : [
+    {
+      "url" : "http://localhost:8080/connect",
+      "description" : "Hilla Backend"
+    }
+  ],
+  "tags" : [
+    {
+      "name" : "candidateServiceImpl",
+      "x-class-name" : "me.gaga.springreactvaadin.service.implementation.candidateServiceImpl"
+    }
+  ],
+  "paths" : {
+    "/candidateServiceImpl/findAllCandidate" : {
+      "post" : {
+        "tags" : [
+          "candidateServiceImpl"
+        ],
+        "operationId" : "candidateServiceImpl_findAllCandidate_POST",
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                      }
+                    ]
+                  },
+                  "x-java-type" : "java.util.List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateServiceImpl/save" : {
+      "post" : {
+        "tags" : [
+          "candidateServiceImpl"
+        ],
+        "operationId" : "candidateServiceImpl_save_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "candidate" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "me.gaga.springreactvaadin.entities.Candidate" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "nullable" : true,
+            "x-java-type" : "java.lang.Long",
+            "x-annotations" : [
+              {
+                "name" : "jakarta.persistence.Id"
+              }
+            ]
+          },
+          "name" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-validation-constraints" : [
+              {
+                "attributes" : {
+                  "min" : 2,
+                  "max" : 100
+                },
+                "simpleName" : "Size"
+              }
+            ],
+            "x-java-type" : "java.lang.String"
+          },
+          "email" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-validation-constraints" : [
+              {
+                "simpleName" : "Email"
+              }
+            ],
+            "x-java-type" : "java.lang.String"
+          }
+        }
+      }
+    }
+  }
+}
