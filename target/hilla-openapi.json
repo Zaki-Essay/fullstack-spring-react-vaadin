@@ -12,11 +12,343 @@
   ],
   "tags" : [
     {
+      "name" : "candidateCrudService",
+      "x-class-name" : "me.gaga.springreactvaadin.service.implementation.candidateCrudService"
+    },
+    {
       "name" : "candidateServiceImpl",
       "x-class-name" : "me.gaga.springreactvaadin.service.implementation.candidateServiceImpl"
     }
   ],
   "paths" : {
+    "/candidateCrudService/count" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_count_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "filter" : {
+                    "nullable" : true,
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "integer",
+                  "format" : "int64",
+                  "x-java-type" : "long"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateCrudService/exists" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_exists_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "format" : "int64",
+                    "x-java-type" : "java.lang.Long"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean",
+                  "x-java-type" : "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateCrudService/get" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_get_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "format" : "int64",
+                    "x-java-type" : "java.lang.Long"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "nullable" : true,
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateCrudService/list" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_list_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "pageable" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/com.vaadin.hilla.mappedtypes.Pageable"
+                      }
+                    ]
+                  },
+                  "filter" : {
+                    "nullable" : true,
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                      }
+                    ]
+                  },
+                  "x-java-type" : "java.util.List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateCrudService/delete" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_delete_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "format" : "int64",
+                    "x-java-type" : "java.lang.Long"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/candidateCrudService/deleteAll" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_deleteAll_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "ids" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "integer",
+                      "format" : "int64",
+                      "x-java-type" : "java.lang.Long"
+                    },
+                    "x-java-type" : "java.lang.Iterable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/candidateCrudService/save" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_save_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "value" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "nullable" : true,
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/candidateCrudService/saveAll" : {
+      "post" : {
+        "tags" : [
+          "candidateCrudService"
+        ],
+        "operationId" : "candidateCrudService_saveAll_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "values" : {
+                    "type" : "array",
+                    "items" : {
+                      "anyOf" : [
+                        {
+                          "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                        }
+                      ]
+                    },
+                    "x-java-type" : "java.lang.Iterable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.entities.Candidate"
+                      }
+                    ]
+                  },
+                  "x-java-type" : "java.util.List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/candidateServiceImpl/findAllCandidate" : {
       "post" : {
         "tags" : [
@@ -90,6 +422,108 @@
   },
   "components" : {
     "schemas" : {
+      "com.vaadin.hilla.crud.filter.Filter" : {
+        "type" : "object"
+      },
+      "com.vaadin.hilla.crud.filter.FilterUnion" : {
+        "type" : "object",
+        "oneOf" : [
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.OrFilter"
+          },
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.AndFilter"
+          },
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.PropertyStringFilter"
+          }
+        ]
+      },
+      "com.vaadin.hilla.crud.filter.OrFilter" : {
+        "anyOf" : [
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+          },
+          {
+            "type" : "object",
+            "properties" : {
+              "children" : {
+                "type" : "array",
+                "items" : {
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+                    }
+                  ]
+                },
+                "x-java-type" : "java.util.List"
+              },
+              "@type" : {
+                "type" : "string",
+                "example" : "or"
+              }
+            }
+          }
+        ]
+      },
+      "com.vaadin.hilla.crud.filter.AndFilter" : {
+        "anyOf" : [
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+          },
+          {
+            "type" : "object",
+            "properties" : {
+              "children" : {
+                "type" : "array",
+                "items" : {
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+                    }
+                  ]
+                },
+                "x-java-type" : "java.util.List"
+              },
+              "@type" : {
+                "type" : "string",
+                "example" : "and"
+              }
+            }
+          }
+        ]
+      },
+      "com.vaadin.hilla.crud.filter.PropertyStringFilter" : {
+        "anyOf" : [
+          {
+            "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.Filter"
+          },
+          {
+            "type" : "object",
+            "properties" : {
+              "propertyId" : {
+                "type" : "string",
+                "x-java-type" : "java.lang.String"
+              },
+              "filterValue" : {
+                "type" : "string",
+                "x-java-type" : "java.lang.String"
+              },
+              "matcher" : {
+                "anyOf" : [
+                  {
+                    "$ref" : "#/components/schemas/com.vaadin.hilla.crud.filter.PropertyStringFilter$Matcher"
+                  }
+                ]
+              },
+              "@type" : {
+                "type" : "string",
+                "example" : "propertyString"
+              }
+            }
+          }
+        ]
+      },
       "me.gaga.springreactvaadin.entities.Candidate" : {
         "type" : "object",
         "properties" : {
@@ -129,6 +563,102 @@
             "x-java-type" : "java.lang.String"
           }
         }
+      },
+      "com.vaadin.hilla.mappedtypes.Pageable" : {
+        "type" : "object",
+        "properties" : {
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32",
+            "x-java-type" : "int"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32",
+            "x-java-type" : "int"
+          },
+          "sort" : {
+            "anyOf" : [
+              {
+                "$ref" : "#/components/schemas/com.vaadin.hilla.mappedtypes.Sort"
+              }
+            ]
+          }
+        }
+      },
+      "com.vaadin.hilla.crud.filter.PropertyStringFilter$Matcher" : {
+        "type" : "string",
+        "enum" : [
+          "EQUALS",
+          "CONTAINS",
+          "LESS_THAN",
+          "GREATER_THAN"
+        ]
+      },
+      "com.vaadin.hilla.mappedtypes.Sort" : {
+        "type" : "object",
+        "properties" : {
+          "orders" : {
+            "type" : "array",
+            "items" : {
+              "nullable" : true,
+              "anyOf" : [
+                {
+                  "$ref" : "#/components/schemas/com.vaadin.hilla.mappedtypes.Order"
+                }
+              ]
+            },
+            "x-java-type" : "java.util.List"
+          }
+        }
+      },
+      "com.vaadin.hilla.mappedtypes.Order" : {
+        "type" : "object",
+        "properties" : {
+          "direction" : {
+            "anyOf" : [
+              {
+                "$ref" : "#/components/schemas/org.springframework.data.domain.Sort$Direction"
+              }
+            ]
+          },
+          "property" : {
+            "type" : "string",
+            "x-validation-constraints" : [
+              {
+                "simpleName" : "NotBlank"
+              }
+            ],
+            "x-java-type" : "java.lang.String"
+          },
+          "ignoreCase" : {
+            "type" : "boolean",
+            "x-java-type" : "boolean"
+          },
+          "nullHandling" : {
+            "nullable" : true,
+            "anyOf" : [
+              {
+                "$ref" : "#/components/schemas/org.springframework.data.domain.Sort$NullHandling"
+              }
+            ]
+          }
+        }
+      },
+      "org.springframework.data.domain.Sort$Direction" : {
+        "type" : "string",
+        "enum" : [
+          "ASC",
+          "DESC"
+        ]
+      },
+      "org.springframework.data.domain.Sort$NullHandling" : {
+        "type" : "string",
+        "enum" : [
+          "NATIVE",
+          "NULLS_FIRST",
+          "NULLS_LAST"
+        ]
       }
     }
   }

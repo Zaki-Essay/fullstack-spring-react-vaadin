@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {candidateServiceImpl} from "Frontend/generated/endpoints";
 import Candidate from "Frontend/generated/me/gaga/springreactvaadin/entities/Candidate";
+import {Grid, GridColumn} from "@vaadin/react-components";
 
 interface CandidateListComponentProps{
 
@@ -15,15 +16,11 @@ const CandidateListComponent = ({}: CandidateListComponentProps)=>{
     }, [])
     return (
         <div>
-
-            <h2>candidate List component</h2>
-            {candidate.map((candidate)=>{
-                return <div >
-                    <span>{candidate.id}</span>
-                    <span>{candidate.name}</span>
-                    <span>{candidate.email}</span>
-                </div>
-            })}
+            <Grid items={candidate} >
+                    <GridColumn path={"id"}/>
+                    <GridColumn path={"name"}/>
+                    <GridColumn path={"email"}/>
+            </Grid>
         </div>
     );
 }
