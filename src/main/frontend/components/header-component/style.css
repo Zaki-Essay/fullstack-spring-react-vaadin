@@ -1,0 +1,103 @@
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--lumo-base-color);
+}
+
+.main-content {
+    flex: 1;
+    padding: var(--lumo-space-l);
+}
+
+/* Header Styles */
+.app-header {
+    background-color: var(--lumo-contrast-5pct);
+    border-bottom: 1px solid var(--lumo-contrast-20pct);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--lumo-space-l);
+    height: 64px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--lumo-space-xl);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: var(--lumo-font-size-xl);
+    font-weight: 700;
+    color: var(--lumo-primary-color);
+    text-decoration: none;
+}
+
+.main-nav {
+    display: flex;
+    gap: var(--lumo-space-l);
+}
+
+.nav-link {
+    color: var(--lumo-body-text-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--lumo-space-s) var(--lumo-space-m);
+    border-radius: var(--lumo-border-radius-s);
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: var(--lumo-primary-color-10pct);
+    color: var(--lumo-primary-color);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--lumo-space-m);
+}
+
+.user-email {
+    color: var(--lumo-body-text-color);
+    font-size: var(--lumo-font-size-s);
+    font-weight: 500;
+}
+
+.logout-btn {
+    background-color: var(--lumo-primary-color);
+    color: var(--lumo-primary-contrast-color);
+    border: none;
+    padding: var(--lumo-space-s) var(--lumo-space-m);
+    border-radius: var(--lumo-border-radius-s);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.logout-btn:hover {
+    background-color: var(--lumo-primary-color-50pct);
+    transform: translateY(-1px);
+    box-shadow: var(--lumo-box-shadow-s);
+}
+

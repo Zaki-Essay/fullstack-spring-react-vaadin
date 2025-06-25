@@ -1,10 +1,21 @@
-import CandidateListComponent from "Frontend/components/candidate-list";
-import "../styles/style.css"
+import CandidateListComponent from "Frontend/components/candidate-list-component/candidate-list";
+import {RootLayout} from "Frontend/layout/app-layout/app-layout";
 
-const Index = () => {
+
+export const Index = () => {
+    const handleLogout = () => {
+        // Handle logout logic
+        console.log("Logging out...");
+    };
+
     return (
-      <CandidateListComponent/>
+        <RootLayout
+            userEmail="4Dw2b@example.com"
+            onLogout={handleLogout}
+        >
+            <CandidateListComponent />
+        </RootLayout>
     );
-}
+};
 
 export default Index;
