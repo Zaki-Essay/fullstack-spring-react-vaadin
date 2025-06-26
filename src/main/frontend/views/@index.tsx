@@ -1,20 +1,10 @@
-import CandidateListComponent from "Frontend/components/candidate-list-component/candidate-list";
-import {RootLayout} from "Frontend/layout/app-layout/app-layout";
-
+import {CandidateCrudComponent} from "Frontend/components/candidate-crud-component/candidate-crud";
+import "../styles/style.css";
 
 export const Index = () => {
-    const handleLogout = () => {
-        // Handle logout logic
-        console.log("Logging out...");
-    };
 
     return (
-        <RootLayout
-            userEmail="4Dw2b@example.com"
-            onLogout={handleLogout}
-        >
-            <CandidateListComponent />
-        </RootLayout>
+            <CandidateCrudComponent />
     );
 };
 

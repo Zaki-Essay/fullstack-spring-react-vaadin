@@ -1,8 +1,12 @@
+import { NavLink } from "react-router-dom";
 import "./style.css";
+import {createMenuItems} from "@vaadin/hilla-file-router/runtime.js";
+
 interface HeaderProps {
     userEmail?: string;
     onLogout?: () => void;
 }
+
 
 export const Header = ({ userEmail, onLogout }: HeaderProps) => {
     return (
@@ -13,9 +17,17 @@ export const Header = ({ userEmail, onLogout }: HeaderProps) => {
                         <span className="logo-text">CandidateApp</span>
                     </div>
                     <nav className="main-nav">
-                        <a href="/dashboard" className="nav-link">Dashboard</a>
-                        <a href="/candidates" className="nav-link">Candidates</a>
-                        <a href="/reports" className="nav-link">Reports</a>
+                        {createMenuItems().map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                }
+                            >
+                                {item.title}
+                            </NavLink>
+                        ))}
                     </nav>
                 </div>
 

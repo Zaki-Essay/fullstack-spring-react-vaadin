@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-
+src/main/frontend/generated/*
 application-dev.properties
