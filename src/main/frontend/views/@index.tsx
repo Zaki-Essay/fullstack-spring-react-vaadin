@@ -1,5 +1,5 @@
 import {CandidateCrudComponent} from "Frontend/components/candidate-crud-component/candidate-crud";
-import "../styles/style.css";
+import "../styles/global.css";
 
 export const Index = () => {
 

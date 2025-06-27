@@ -16,7 +16,7 @@
     "@vaadin/hilla-react-signals": "24.4.6",
     "@vaadin/polymer-legacy-adapter": "24.4.5",
     "@vaadin/react-components": "24.4.5",
-    "@vaadin/router": "1.7.5",
+    "@vaadin/router": "^2.0.0",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.4.5",
     "@vaadin/vaadin-material-styles": "24.4.5",
@@ -25,6 +25,7 @@
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "3.1.4",
+    "lucide-react": "^0.525.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "6.23.1"
@@ -44,7 +45,7 @@
     "@vaadin/hilla-generator-plugin-push": "24.4.6",
     "@vaadin/hilla-generator-plugin-subtypes": "24.4.6",
     "@vaadin/hilla-generator-utils": "24.4.6",
-    "@vitejs/plugin-react": "4.3.1",
+    "@vitejs/plugin-react": "^4.6.0",
     "async": "3.2.5",
     "glob": "10.4.1",
     "rollup-plugin-brotli": "3.1.0",
@@ -52,7 +53,7 @@
     "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
     "typescript": "5.4.5",
-    "vite": "5.3.3",
+    "vite": "^7.0.0",
     "vite-plugin-checker": "0.6.4",
     "workbox-build": "7.1.1",
     "workbox-core": "7.1.0",
@@ -115,13 +116,12 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "fe26314ea91b9c79dab26d5e84ef262863bc1ed2ae8824be00aec6cabf0411ed"
+    "hash": "9042f300ad2f108482316f93fa803b183c46df301cd724c1d137b29fed755c78"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
     "@vaadin/polymer-legacy-adapter": "$@vaadin/polymer-legacy-adapter",
     "@vaadin/vaadin-development-mode-detector": "$@vaadin/vaadin-development-mode-detector",
-    "@vaadin/router": "$@vaadin/router",
     "@vaadin/vaadin-usage-statistics": "$@vaadin/vaadin-usage-statistics",
     "@vaadin/react-components": "$@vaadin/react-components",
     "@vaadin/common-frontend": "$@vaadin/common-frontend",
@@ -132,7 +132,6 @@
     "@vaadin/hilla-react-crud": "$@vaadin/hilla-react-crud",
     "@vaadin/hilla-file-router": "$@vaadin/hilla-file-router",
     "construct-style-sheets-polyfill": "$construct-style-sheets-polyfill",
-    "react-router-dom": "$react-router-dom",
     "@vaadin/hilla-react-i18n": "$@vaadin/hilla-react-i18n",
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
@@ -142,6 +141,9 @@
     "date-fns": "$date-fns",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
-    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles"
+    "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
+    "@vaadin/router": "$@vaadin/router",
+    "react-router-dom": "$react-router-dom",
+    "lucide-react": "$lucide-react"
   }
 }
