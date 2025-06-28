@@ -1,4 +1,3 @@
-import CandidateList from "Frontend/components/candidate-list-component/candidate-list";
 import LLMChat from "Frontend/components/chat-ia-component/llm-chat";
 
 export default function  ChatIa() {

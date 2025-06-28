@@ -6,6 +6,7 @@
     --lumo-primary-color: #1976d2;
     --lumo-primary-color-50pct: rgba(25, 118, 210, 0.5);
     --lumo-primary-color-10pct: rgba(25, 118, 210, 0.1);
+    --lumo-primary-contrast-color: #ffffff;
     --lumo-primary-text-color: #1a1a1a;
     --lumo-secondary-text-color: #666666;
     --lumo-body-text-color: #333333;
@@ -27,6 +28,8 @@
     --lumo-box-shadow-s: 0 2px 6px rgba(0, 0, 0, 0.1);
     --lumo-box-shadow-m: 0 4px 12px rgba(0, 0, 0, 0.15);
     --lumo-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 60px;
 }
 @import url('@vaadin/react-components/css/Lumo.css');
 @import url('@vaadin/react-components/css/lumo/Utility.module.css');

@@ -56,6 +56,7 @@ export default function LLMChat() {
 
         // Handle streaming response
         ChatIaService.sendMessage(userMessage.content).onNext(chunk => {
+            setIsLoading(false);
             setMessages(prevMessages => {
                 return prevMessages.map(msg =>
                     msg.id === assistantMessageId
@@ -66,7 +67,7 @@ export default function LLMChat() {
         });
 
         // Set loading to false after a delay (in real implementation, this should be handled by the service)
-        setTimeout(() => setIsLoading(false), 5000);
+
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -143,6 +144,17 @@ export default function LLMChat() {
                             </div>
                         </div>
                     ))
+                )}
+                {isLoading && (
+                    <div className="message assistant">
+                        <div className="message-avatar assistant">
+                            <Bot size={20} />
+                        </div>
+                        <div className="typing-indicator">
+                            <Loader2 size={16} className="animate-spin" />
+                            Thinking...
+                        </div>
+                    </div>
                 )}
                 <div ref={messagesEndRef} />
             </div>
