@@ -1,8 +1,6 @@
-import { useState } from "react";
 import {NavLink, Outlet} from "react-router-dom";
 import "./style.css";
 import {createMenuItems} from "@vaadin/hilla-file-router/runtime.js";
-import {Bot} from "lucide-react";
 
 interface LayoutProps {
     userEmail?: string;
