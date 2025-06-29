@@ -2,6 +2,7 @@ import { useState } from "react";
 import {NavLink, Outlet} from "react-router-dom";
 import "./style.css";
 import {createMenuItems} from "@vaadin/hilla-file-router/runtime.js";
+import {Bot} from "lucide-react";
 
 interface LayoutProps {
     userEmail?: string;
@@ -13,7 +14,9 @@ export default function Layout({ userEmail, onLogout }: LayoutProps) {
         <div className="app-layout">
             <aside className="sidebar">
                 <div className="logo">
-                    <span className="logo-text">CandidateApp</span>
+                    <span className="logo-text">
+                        GenAPP
+                    </span>
                 </div>
 
                 <nav className="main-nav">

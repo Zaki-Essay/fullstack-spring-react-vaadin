@@ -122,27 +122,27 @@ export default function LLMChat() {
                     </div>
                 ) : (
                     messages.map((message) => (
-                        <div key={message.id} className={`message ${message.role}`}>
-                            <div className={`message-avatar ${message.role}`}>
-                                {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
-                            </div>
-                            <div className="message-content">
-                                <p className="message-text">{message.content}</p>
-                                <div className="message-actions">
-                                    <button
-                                        className="copy-button"
-                                        onClick={() => handleCopyMessage(message.id, message.content)}
-                                        title="Copy message"
-                                    >
-                                        {copiedMessageId === message.id ? (
-                                            <Check size={16} />
-                                        ) : (
-                                            <Copy size={16} />
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                       message.content!='' && (<div key={message.id} className={`message ${message.role}`}>
+                           <div className={`message-avatar ${message.role}`}>
+                               {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
+                           </div>
+                           <div className="message-content">
+                               <p className="message-text">{message.content}</p>
+                               <div className="message-actions">
+                                   <button
+                                       className="copy-button"
+                                       onClick={() => handleCopyMessage(message.id, message.content)}
+                                       title="Copy message"
+                                   >
+                                       {copiedMessageId === message.id ? (
+                                           <Check size={16} />
+                                       ) : (
+                                           <Copy size={16} />
+                                       )}
+                                   </button>
+                               </div>
+                           </div>
+                       </div>)
                     ))
                 )}
                 {isLoading && (

@@ -6,7 +6,7 @@
 }
 
 .sidebar {
-    width: 240px;
+    width: 200px;
     background-color: var(--lumo-contrast-5pct);
     border-right: 1px solid var(--lumo-contrast-20pct);
     display: flex;
@@ -15,7 +15,16 @@
 }
 
 .sidebar .logo {
-    margin-bottom: var(--lumo-space-xl);
+    display: flex;
+    align-items: center;
+    padding: var(--lumo-space-l);
+}
+
+.sidebar .logo-text {
+    font-size: var(--lumo-font-size-xl);
+    font-weight: 700;
+    color: var(--lumo-primary-color);
+    text-decoration: none;
 }
 
 .sidebar .main-nav {
@@ -48,3 +57,4 @@
 .main-content {
     flex: 1;
 }
+
