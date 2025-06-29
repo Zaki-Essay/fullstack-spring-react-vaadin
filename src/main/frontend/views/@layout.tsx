@@ -10,7 +10,7 @@ interface LayoutProps {
 export default function Layout({ userEmail, onLogout }: LayoutProps) {
     return (
         <div className="app-layout">
-            <Sidebar userEmail={"userEmail"} onLogout={() => {}}  />
+            <Sidebar userEmail={"UserEamail@example.com"} onLogout={() => {}}  />
             <main className="main-content">
                 <Outlet />
             </main>

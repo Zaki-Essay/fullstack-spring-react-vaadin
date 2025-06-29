@@ -2,7 +2,19 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { createMenuItems } from "@vaadin/hilla-file-router/runtime.js";
 import "./style.css";
-import {LogOut} from "lucide-react";
+import {
+    BarChart2,
+    ClipboardList,
+    Home, Info,
+    Lamp,
+    LayoutDashboard,
+    LogOut,
+    MessageSquare, Phone,
+    Settings,
+    User,
+    Users
+} from "lucide-react";
+import ChatHistory from "Frontend/components/chat-history-component/chat-history";
 
 interface SidebarProps {
     userEmail?: string;
@@ -47,19 +59,19 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
 
     // Icon mapping for navigation items (you can expand this based on your routes)
     const getNavIcon = (title: string) => {
-        const iconMap: { [key: string]: string } = {
-            'Dashboard': '📊',
-            'Profile': '👤',
-            'Settings': '⚙️',
-            'Analytics': '📈',
-            'Reports': '📋',
-            'Users': '👥',
-            'Chat Ia': '💬',
-            'Index': '🏠',
-            'About': 'ℹ️',
-            'Contact': '📞'
+        const iconMap: { [key: string]: JSX.Element } = {
+            'Dashboard': <LayoutDashboard size={20} />,
+            'Profile': <User size={20} />,
+            'Settings': <Settings size={20} />,
+            'Analytics': <BarChart2 size={20} />,
+            'Reports': <ClipboardList size={20} />,
+            'Users': <Users size={20} />,
+            'Chat Ia': <MessageSquare size={20} />,
+            'Index': <Home size={20} />,
+            'About': <Info size={20} />,
+            'Contact': <Phone size={20} />
         };
-        return iconMap[title] || '•';
+        return iconMap[title] || <div style={{ width: 20 }} />;
     };
 
     const toggleSidebar = () => {
@@ -75,6 +87,8 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
             setIsMobileOpen(false);
         }
     };
+
+
 
     return (
         <>
@@ -148,6 +162,14 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
                         </NavLink>
                     ))}
                 </nav>
+
+                {/* Chat History Component */}
+                <ChatHistory
+                    isCollapsed={isCollapsed}
+                    onSelectChat={()=> {}}
+                    onNewChat={()=> {}}
+                    currentChatId={''}
+                />
 
                 {/* User Info Section */}
                 {userEmail && (

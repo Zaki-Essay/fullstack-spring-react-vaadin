@@ -182,9 +182,8 @@
 /* User Info Section */
 .sidebar .user-info {
     margin-top: auto;
-    padding: 0.25rem;
-    border-top: 1px solid var(--lumo-contrast-5pct);
-    background: rgba(25, 118, 210, 0.02);
+    padding: 0.22rem;
+    border-top: 1px solid var(--lumo-contrast-20pct);
     position: relative;
 }
 
@@ -283,7 +282,7 @@
 /* Toggle Button */
 .sidebar-toggle {
     position: absolute;
-    top: var(--lumo-space-xl);
+    top: var(--lumo-space-l);
     right: -12px;
     width: 24px;
     height: 24px;
