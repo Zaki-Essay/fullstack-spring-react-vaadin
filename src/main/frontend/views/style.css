@@ -5,55 +5,6 @@
     background-color: var(--lumo-base-color);
 }
 
-.sidebar {
-    width: 200px;
-    background-color: var(--lumo-contrast-5pct);
-    border-right: 1px solid var(--lumo-contrast-20pct);
-    display: flex;
-    flex-direction: column;
-    padding: var(--lumo-space-l);
-}
-
-.sidebar .logo {
-    display: flex;
-    align-items: center;
-    padding: var(--lumo-space-l);
-}
-
-.sidebar .logo-text {
-    font-size: var(--lumo-font-size-xl);
-    font-weight: 700;
-    color: var(--lumo-primary-color);
-    text-decoration: none;
-}
-
-.sidebar .main-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--lumo-space-m);
-}
-
-.sidebar .nav-link {
-    padding: var(--lumo-space-s);
-    text-decoration: none;
-    font-weight: 500;
-    border-radius: var(--lumo-border-radius-s);
-    color: var(--lumo-body-text-color);
-    transition: background-color 0.2s;
-}
-
-.sidebar .nav-link:hover {
-    background-color: var(--lumo-primary-color-10pct);
-    color: var(--lumo-primary-color);
-}
-
-.sidebar .user-info {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--lumo-space-s);
-}
-
 .main-content {
     flex: 1;
 }

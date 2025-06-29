@@ -63,7 +63,7 @@
 .user-info {
     display: flex;
     align-items: center;
-    gap: var(--lumo-space-m);
+    gap: var(--lumo-space-s);
 }
 
 .user-email {
