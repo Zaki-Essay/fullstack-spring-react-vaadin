@@ -14,17 +14,18 @@ import {
     User,
     Users
 } from "lucide-react";
-import ChatHistory from "Frontend/components/chat-history-component/chat-history";
+import {ChatHistory} from "Frontend/components/chat-history-component/chat-history";
 
 interface SidebarProps {
     userEmail?: string;
     onLogout?: () => void;
 }
 
-const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
+export const SideBar = ({ userEmail, onLogout }: SidebarProps) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [currentChatId, setCurrentChatId] = useState<string>('');
 
     // Check if device is mobile
     useEffect(() => {
@@ -57,7 +58,7 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
         return name.charAt(0).toUpperCase();
     };
 
-    // Icon mapping for navigation items (you can expand this based on your routes)
+    // Icon mapping for navigation items
     const getNavIcon = (title: string) => {
         const iconMap: { [key: string]: JSX.Element } = {
             'Dashboard': <LayoutDashboard size={20} />,
@@ -88,7 +89,27 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
         }
     };
 
+    // Handle chat selection - communicate with main chat component
+    const handleSelectChat = (chatId: string) => {
+        setCurrentChatId(chatId);
+        // You can use custom events, context, or state management to communicate with the main chat component
+        window.dispatchEvent(new CustomEvent('selectChat', { detail: { chatId } }));
 
+        if (isMobile) {
+            setIsMobileOpen(false);
+        }
+    };
+
+    // Handle new chat creation
+    const handleNewChat = () => {
+        setCurrentChatId('');
+        // Communicate with main chat component to start new chat
+        window.dispatchEvent(new CustomEvent('newChat'));
+
+        if (isMobile) {
+            setIsMobileOpen(false);
+        }
+    };
 
     return (
         <>
@@ -166,9 +187,9 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
                 {/* Chat History Component */}
                 <ChatHistory
                     isCollapsed={isCollapsed}
-                    onSelectChat={()=> {}}
-                    onNewChat={()=> {}}
-                    currentChatId={''}
+                    onSelectChat={handleSelectChat}
+                    onNewChat={handleNewChat}
+                    currentChatId={currentChatId}
                 />
 
                 {/* User Info Section */}
@@ -193,5 +214,3 @@ const Sidebar = ({ userEmail, onLogout }: SidebarProps) => {
         </>
     );
 };
-
-export default Sidebar;

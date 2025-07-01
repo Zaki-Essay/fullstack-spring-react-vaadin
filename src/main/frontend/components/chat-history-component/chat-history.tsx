@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { History, MessageSquare, Trash2, Plus, Search, Calendar } from 'lucide-react';
-import './style.css';
+import React, {useEffect, useState} from "react";
+import {ChatIaService} from "Frontend/generated/endpoints";
+import {Calendar,History, MessageSquare, Plus, Search, Trash2} from "lucide-react";
+import "./style.css";
 
 interface ChatSession {
     id: string;
@@ -10,6 +11,22 @@ interface ChatSession {
     messageCount: number;
 }
 
+interface Message {
+    id: string;
+    content: string;
+    role: 'user' | 'assistant';
+    timestamp: Date;
+}
+
+// Define the shape of data coming from the backend
+interface BackendChatSession {
+    id?: string;
+    title?: string;
+    lastMessage?: string;
+    timestamp?: string; // Backend likely returns string timestamps
+    messageCount?: number;
+}
+
 interface ChatHistoryProps {
     isCollapsed: boolean;
     onSelectChat: (chatId: string) => void;
@@ -17,57 +34,98 @@ interface ChatHistoryProps {
     currentChatId?: string;
 }
 
-const ChatHistory: React.FC<ChatHistoryProps> = ({
-                                                     isCollapsed,
-                                                     onSelectChat,
-                                                     onNewChat,
-                                                     currentChatId
-                                                 }) => {
+// Updated ChatHistory component with backend integration
+export const ChatHistory: React.FC<ChatHistoryProps> = ({
+                                                            isCollapsed,
+                                                            onSelectChat,
+                                                            onNewChat,
+                                                            currentChatId
+                                                        }) => {
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    // Load chat sessions from memory (in a real app, this would be from a database)
+    // Get current user ID (you'll need to implement this based on your auth system)
+    const getCurrentUserId = () => {
+        // Replace this with your actual user ID retrieval logic
+        return 'current-user-id'; // This should come from your authentication system
+    };
+
+    // Helper function to safely convert backend data to ChatSession
+    const convertToChatSession = (backendSession: BackendChatSession): ChatSession | null => {
+        // Validate required fields
+        if (!backendSession.id || !backendSession.title || !backendSession.lastMessage) {
+            console.warn('Invalid chat session data:', backendSession);
+            return null;
+        }
+
+        return {
+            id: backendSession.id,
+            title: backendSession.title,
+            lastMessage: backendSession.lastMessage,
+            timestamp: backendSession.timestamp ? new Date(backendSession.timestamp) : new Date(),
+            messageCount: backendSession.messageCount ?? 0
+        };
+    };
+
+    // Load chat sessions from backend
+    const loadChatSessions = async () => {
+        setLoading(true);
+        try {
+            const userId = getCurrentUserId();
+            const sessions = await ChatIaService.getChatSessions(userId);
+
+            // Convert and filter valid sessions
+            const validSessions = sessions
+                .map(convertToChatSession)
+                .filter((session): session is ChatSession => session !== null);
+
+            setChatSessions(validSessions);
+        } catch (error) {
+            console.error('Error loading chat sessions:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Search chat sessions
+    const searchChatSessions = async (searchTerm: string) => {
+        setLoading(true);
+        try {
+            const userId = getCurrentUserId();
+            const sessions = await ChatIaService.searchChatSessions(userId, searchTerm);
+
+            // Convert and filter valid sessions
+            const validSessions = sessions
+                .map(convertToChatSession)
+                .filter((session): session is ChatSession => session !== null);
+
+            setChatSessions(validSessions);
+        } catch (error) {
+            console.error('Error searching chat sessions:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Load sessions on component mount
     useEffect(() => {
-        // Mock data for demo - in real app, load from your backend
-        const mockSessions: ChatSession[] = [
-            {
-                id: '1',
-                title: 'React Best Practices',
-                lastMessage: 'Thanks for the explanation about hooks!',
-                timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-                messageCount: 12
-            },
-            {
-                id: '2',
-                title: 'TypeScript Questions',
-                lastMessage: 'How do I define interface for...',
-                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-                messageCount: 8
-            },
-            {
-                id: '3',
-                title: 'CSS Flexbox Layout',
-                lastMessage: 'Perfect! That solved my layout issue.',
-                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-                messageCount: 15
-            },
-            {
-                id: '4',
-                title: 'Database Design Help',
-                lastMessage: 'What about indexing strategies?',
-                timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
-                messageCount: 23
-            },
-
-        ];
-        setChatSessions(mockSessions);
+        loadChatSessions();
     }, []);
 
-    const filteredSessions = chatSessions.filter(session =>
-        session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.lastMessage.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Handle search with debouncing
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (searchTerm.trim()) {
+                searchChatSessions(searchTerm);
+            } else {
+                loadChatSessions();
+            }
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm]);
 
     const formatTimestamp = (timestamp: Date) => {
         const now = new Date();
@@ -85,9 +143,17 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         }
     };
 
-    const deleteChat = (chatId: string, e: React.MouseEvent) => {
+    const deleteChat = async (chatId: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        setChatSessions(prev => prev.filter(session => session.id !== chatId));
+        try {
+            const userId = getCurrentUserId();
+            const success = await ChatIaService.deleteChatSession(parseInt(chatId), userId);
+            if (success) {
+                setChatSessions(prev => prev.filter(session => session.id !== chatId));
+            }
+        } catch (error) {
+            console.error('Error deleting chat session:', error);
+        }
     };
 
     const toggleExpanded = () => {
@@ -96,25 +162,25 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         }
     };
 
-    const generateChatTitle = (message: string) => {
-        // Simple title generation from first message
-        return message.length > 30 ? message.substring(0, 30) + '...' : message;
+    // Expose method to add new chat session
+    const addNewChatSession = async (firstMessage: string): Promise<string | null> => {
+        try {
+            const userId = getCurrentUserId();
+            const newSession = await ChatIaService.createNewChatSession(firstMessage, userId);
+
+            const convertedSession = convertToChatSession(newSession);
+            if (convertedSession) {
+                setChatSessions(prev => [convertedSession, ...prev]);
+                return convertedSession.id;
+            }
+            return null;
+        } catch (error) {
+            console.error('Error creating new chat session:', error);
+            return null;
+        }
     };
 
-    // Function to be called when a new chat is created
-    const addNewChatSession = (firstMessage: string) => {
-        const newSession: ChatSession = {
-            id: Date.now().toString(),
-            title: generateChatTitle(firstMessage),
-            lastMessage: firstMessage,
-            timestamp: new Date(),
-            messageCount: 1
-        };
-        setChatSessions(prev => [newSession, ...prev]);
-        return newSession.id;
-    };
-
-    // Function to update existing chat session
+    // Expose method to update chat session
     const updateChatSession = (chatId: string, lastMessage: string) => {
         setChatSessions(prev => prev.map(session =>
             session.id === chatId
@@ -128,12 +194,22 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         ));
     };
 
+    // Expose methods to parent component
+    useEffect(() => {
+        // You can use refs or context to expose these methods to parent components
+        (window as any).chatHistoryMethods = {
+            addNewChatSession,
+            updateChatSession,
+            refreshSessions: loadChatSessions
+        };
+    }, []);
+
     return (
         <div className="chat-history-section">
             {/* Header */}
             <div className="chat-history-header" onClick={toggleExpanded}>
                 <div className="chat-history-title">
-                    <History size={16} className="chat-history-icon" />
+                    <History size={20} />
                     {!isCollapsed && <span>Chat History</span>}
                 </div>
                 {!isCollapsed && (
@@ -150,7 +226,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
                 )}
             </div>
 
-            {/* Search - only show when expanded and not collapsed */}
+            {/* Search */}
             {!isCollapsed && (isExpanded || chatSessions.length > 0) && (
                 <div className="chat-search">
                     <div className="search-input-wrapper">
@@ -169,12 +245,14 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             {/* Chat List */}
             {!isCollapsed && (isExpanded || chatSessions.length > 0) && (
                 <div className="chat-list">
-                    {filteredSessions.length === 0 ? (
+                    {loading ? (
+                        <div className="loading-sessions">Loading...</div>
+                    ) : chatSessions.length === 0 ? (
                         <div className="no-chats">
                             {searchTerm ? 'No matching chats found' : 'No chat history yet'}
                         </div>
                     ) : (
-                        filteredSessions.map((session) => (
+                        chatSessions.map((session) => (
                             <div
                                 key={session.id}
                                 className={`chat-item ${session.id === currentChatId ? 'active' : ''}`}
@@ -216,5 +294,3 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         </div>
     );
 };
-
-export default ChatHistory;

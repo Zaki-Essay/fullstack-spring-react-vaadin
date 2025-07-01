@@ -104,8 +104,8 @@
 .sidebar .nav-link {
     display: flex;
     align-items: center;
-    padding: var(--lumo-space-m) var(--lumo-space-s);
-    padding-left:3rem;
+    padding-top: var(--lumo-space-m);
+    padding-bottom: var(--lumo-space-m);
     text-decoration: none;
     font-weight: 500;
     font-size: var(--lumo-font-size-m);
@@ -117,32 +117,18 @@
     margin-bottom: var(--lumo-space-xs);
 }
 
-.sidebar .nav-link::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: linear-gradient(135deg,
-    var(--lumo-secondary-text-color),
-    rgba(25, 118, 210, 0.8));
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 0 var(--lumo-border-radius-s) var(--lumo-border-radius-s) 0;
-}
+
 
 .sidebar .nav-link:hover {
     background: linear-gradient(135deg,
-    var(--lumo-primary-color-10pct),
+    var(--lumo-contrast-5pct),
     rgba(25, 118, 210, 0.05));
     color: var(--lumo-secondary-text-color);
     transform: translateX(4px);
     box-shadow: var(--lumo-box-shadow-xs);
 }
 
-.sidebar .nav-link:hover::before {
-    width: 4px;
-}
+
 
 .sidebar .nav-link.active {
     background: linear-gradient(135deg,
@@ -162,9 +148,12 @@
 }
 
 .sidebar .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 20px;
     height: 20px;
-    margin-right: var(--lumo-space-m);
+    margin-right: var(--lumo-space-s);
     opacity: 0.7;
     transition: opacity 0.3s ease;
     flex-shrink: 0;
@@ -352,9 +341,7 @@
 
 /* Smooth scrolling for navigation */
 .sidebar .main-nav {
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--lumo-contrast-10pct) transparent;
+
 }
 
 .sidebar .main-nav::-webkit-scrollbar {

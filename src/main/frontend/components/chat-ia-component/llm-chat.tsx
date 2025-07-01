@@ -3,6 +3,14 @@ import {Send, Bot, User, Loader2, Trash2, Copy, Check, Square} from 'lucide-reac
 import "./style.css";
 import {ChatIaService} from "Frontend/generated/endpoints";
 
+interface ChatSession {
+    id: string;
+    title: string;
+    lastMessage: string;
+    timestamp: Date;
+    messageCount: number;
+}
+
 interface Message {
     id: string;
     content: string;
@@ -10,12 +18,29 @@ interface Message {
     timestamp: Date;
 }
 
-export default function LLMChat() {
+// Define the shape of data coming from the backend
+interface BackendMessage {
+    id?: string;
+    content?: string;
+    role?: string;
+    timestamp?: string; // Backend likely returns string timestamps
+}
+
+interface BackendChatSession {
+    id?: string;
+    title?: string;
+    lastMessage?: string;
+    timestamp?: string;
+    messageCount?: number;
+}
+
+export function LlmChat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
     const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+    const [currentChatId, setCurrentChatId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const streamSubscriptionRef = useRef<any>(null);
@@ -28,6 +53,79 @@ export default function LLMChat() {
         scrollToBottom();
     }, [messages]);
 
+    // Get current user ID
+    const getCurrentUserId = () => {
+        return 'current-user-id'; // Replace with actual user ID
+    };
+
+    // Helper function to safely convert backend message data
+    const convertToMessage = (backendMessage: BackendMessage): Message | null => {
+        // Validate required fields
+        if (!backendMessage.id || !backendMessage.content || !backendMessage.role) {
+            console.warn('Invalid message data:', backendMessage);
+            return null;
+        }
+
+        // Validate role
+        if (backendMessage.role !== 'user' && backendMessage.role !== 'assistant') {
+            console.warn('Invalid message role:', backendMessage.role);
+            return null;
+        }
+
+        return {
+            id: backendMessage.id,
+            content: backendMessage.content,
+            role: backendMessage.role as 'user' | 'assistant',
+            timestamp: backendMessage.timestamp ? new Date(backendMessage.timestamp) : new Date()
+        };
+    };
+
+    // Load messages for a specific chat session
+    const loadChatMessages = async (sessionId: string) => {
+        try {
+            const userId = getCurrentUserId();
+            const chatMessages = await ChatIaService.getChatMessages(parseInt(sessionId), userId);
+
+            // Convert and filter valid messages
+            const validMessages = chatMessages
+                .map(convertToMessage)
+                .filter((message): message is Message => message !== null);
+
+            setMessages(validMessages);
+            setCurrentChatId(sessionId);
+        } catch (error) {
+            console.error('Error loading chat messages:', error);
+        }
+    };
+
+    // Handle new chat
+    const handleNewChat = () => {
+        setMessages([]);
+        setCurrentChatId(null);
+        setInputValue('');
+    };
+
+    // Listen for sidebar events
+    useEffect(() => {
+        const handleSelectChat = (event: CustomEvent) => {
+            const { chatId } = event.detail;
+            loadChatMessages(chatId);
+        };
+
+        const handleNewChatEvent = () => {
+            handleNewChat();
+        };
+
+        window.addEventListener('selectChat', handleSelectChat as EventListener);
+        window.addEventListener('newChat', handleNewChatEvent);
+
+        return () => {
+            window.removeEventListener('selectChat', handleSelectChat as EventListener);
+            window.removeEventListener('newChat', handleNewChatEvent);
+        };
+    }, []);
+
+    // Handle sending messages
     const handleSendMessage = async () => {
         if (!inputValue.trim() || isLoading) return;
 
@@ -38,34 +136,51 @@ export default function LLMChat() {
             timestamp: new Date()
         };
 
-        // Add user message to messages array
         setMessages(prev => [...prev, userMessage]);
+        const messageContent = inputValue.trim();
         setInputValue('');
         setIsLoading(true);
         setIsStreaming(true);
 
-        const assistantMessageId = (Date.now() + 1).toString();
-        const assistantTimestamp = new Date();
-
-        // Add empty assistant message
-        setMessages(prev => [...prev, {
-            id: assistantMessageId,
-            content: '',
-            role: 'assistant',
-            timestamp: assistantTimestamp
-        }]);
-
         try {
-            // Handle streaming response with your service
-            const subscription = ChatIaService.sendMessage(userMessage.content);
+            const userId = getCurrentUserId();
+            let sessionId = currentChatId;
+
+            if (!sessionId) {
+                const newSession = await ChatIaService.createNewChatSession(messageContent, userId);
+                // Safely extract session ID
+                if (newSession && newSession.id) {
+                    sessionId = newSession.id;
+                    setCurrentChatId(sessionId);
+                    if ((window as any).chatHistoryMethods) {
+                        (window as any).chatHistoryMethods.refreshSessions();
+                    }
+                } else {
+                    throw new Error('Failed to create new chat session');
+                }
+            } else {
+                await ChatIaService.addMessageToChat(parseInt(sessionId), messageContent, 'user', userId);
+            }
+
+            const assistantMessageId = (Date.now() + 1).toString();
+            const assistantTimestamp = new Date();
+
+            setMessages(prev => [...prev, {
+                id: assistantMessageId,
+                content: '',
+                role: 'assistant',
+                timestamp: assistantTimestamp
+            }]);
+
+            const subscription = ChatIaService.sendMessage(messageContent);
             streamSubscriptionRef.current = subscription;
 
-            subscription.onNext(chunk => {
-                // Check if the component is still streaming (not stopped)
-                if (!streamSubscriptionRef.current) {
-                    return;
-                }
+            let fullAssistantResponse = '';
 
+            subscription.onNext(chunk => {
+                if (!streamSubscriptionRef.current) return;
+
+                fullAssistantResponse += chunk;
                 setIsLoading(false);
                 setMessages(prevMessages => {
                     return prevMessages.map(msg =>
@@ -76,21 +191,34 @@ export default function LLMChat() {
                 });
             });
 
-            // Handle completion
-            subscription.onComplete(() => {
+            subscription.onComplete(async () => {
                 setIsLoading(false);
                 setIsStreaming(false);
                 streamSubscriptionRef.current = null;
+
+                if (sessionId && fullAssistantResponse) {
+                    try {
+                        await ChatIaService.addMessageToChat(
+                            parseInt(sessionId),
+                            fullAssistantResponse,
+                            'assistant',
+                            userId
+                        );
+
+                        if ((window as any).chatHistoryMethods) {
+                            (window as any).chatHistoryMethods.updateChatSession(sessionId, fullAssistantResponse);
+                        }
+                    } catch (error) {
+                        console.error('Error saving assistant message:', error);
+                    }
+                }
             });
 
-            // Handle errors
             subscription.onError(() => {
-                console.error('Streaming error:');
                 setIsLoading(false);
                 setIsStreaming(false);
                 streamSubscriptionRef.current = null;
 
-                // Optionally add an error message
                 setMessages(prevMessages => {
                     return prevMessages.map(msg =>
                         msg.id === assistantMessageId
@@ -106,20 +234,13 @@ export default function LLMChat() {
             setIsStreaming(false);
             streamSubscriptionRef.current = null;
 
-            // Add error message to the assistant message
-            setMessages(prevMessages => {
-                return prevMessages.map(msg =>
-                    msg.id === assistantMessageId
-                        ? { ...msg, content: '[Error: Failed to send message]' }
-                        : msg
-                );
-            });
+            // Remove the user message if we failed to process it
+            setMessages(prev => prev.slice(0, -1));
         }
     };
 
     const handleStopGeneration = () => {
         if (streamSubscriptionRef.current) {
-            // Cancel the subscription if your service supports it
             if (typeof streamSubscriptionRef.current.cancel === 'function') {
                 streamSubscriptionRef.current.cancel();
             } else if (typeof streamSubscriptionRef.current.unsubscribe === 'function') {
@@ -131,8 +252,6 @@ export default function LLMChat() {
             streamSubscriptionRef.current = null;
             setIsLoading(false);
             setIsStreaming(false);
-
-            console.log('Generation stopped by user');
         }
     };
 
@@ -144,15 +263,10 @@ export default function LLMChat() {
     };
 
     const handleClearChat = () => {
-        // Stop any ongoing generation first
         if (streamSubscriptionRef.current) {
             handleStopGeneration();
         }
-
-        setMessages([]);
-        setInputValue('');
-        setIsLoading(false);
-        setIsStreaming(false);
+        handleNewChat();
     };
 
     const handleCopyMessage = async (messageId: string, content: string) => {
@@ -165,7 +279,6 @@ export default function LLMChat() {
         }
     };
 
-    // Cleanup on component unmount
     useEffect(() => {
         return () => {
             if (streamSubscriptionRef.current) {
