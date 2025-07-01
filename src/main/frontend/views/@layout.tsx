@@ -1,6 +1,7 @@
 import {NavLink, Outlet} from "react-router-dom";
 import "./style.css";
 import Sidebar from "Frontend/components/side-bar-component/side-bar";
+import {Sidebar2} from "Frontend/components/side-bar-component/side-bar2";
 
 interface LayoutProps {
     userEmail?: string;
@@ -10,7 +11,7 @@ interface LayoutProps {
 export default function Layout({ userEmail, onLogout }: LayoutProps) {
     return (
         <div className="app-layout">
-            <Sidebar userEmail={"UserEamail@example.com"} onLogout={() => {}}  />
+            <Sidebar2 userEmail={"UserEamail@example.com"} onLogout={() => {}}  />
             <main className="main-content">
                 <Outlet />
             </main>
