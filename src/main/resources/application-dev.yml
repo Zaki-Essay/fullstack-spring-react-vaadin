@@ -72,7 +72,7 @@ management:
 spring:
   config:
     activate:
-      on-profile: production
+      on-profile: dev
 
 #vaadin:
   #productionMode: true

@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
   pull_request:
     branches: [ "main" ]
 
@@ -50,7 +50,7 @@ jobs:
         run: npm ci --prefer-offline --no-audit
 
       - name: Build with Maven (Production Profile)
-        run: mvn -B clean package -DskipTests
+        run: mvn -B clean package -pdev -DskipTests
 
       - name: Run tests
         run: mvn test

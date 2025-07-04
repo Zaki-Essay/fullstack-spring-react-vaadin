@@ -69,8 +69,10 @@ management:
 
 ---
 # Production profile configuration
-#spring:
-  #profiles: production
+spring:
+  config:
+    activate:
+      on-profile: production
 
 #vaadin:
   #productionMode: true
