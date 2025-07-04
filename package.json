@@ -121,7 +121,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "9042f300ad2f108482316f93fa803b183c46df301cd724c1d137b29fed755c78"
+    "hash": "e4c4ab6d1d2cdab4a3098f9fc31d8ca944a6877081b9c255a9af3f9e6ed98ac5"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -149,6 +149,11 @@
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
     "@vaadin/router": "$@vaadin/router",
     "react-router-dom": "$react-router-dom",
-    "lucide-react": "$lucide-react"
+    "lucide-react": "$lucide-react",
+    "highlight.js": "$highlight.js",
+    "react-markdown": "$react-markdown",
+    "react-syntax-highlighter": "$react-syntax-highlighter",
+    "rehype-highlight": "$rehype-highlight",
+    "remark-gfm": "$remark-gfm"
   }
 }
