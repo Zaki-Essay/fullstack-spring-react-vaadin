@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Your Spring Boot application
+  spring-react-vaadin:
+    image: ${DOCKERHUB_USERNAME}/spring-react-vaadin:latest
+    container_name: spring-react-vaadin-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - OLLAMA_MODEL=mistral
+    depends_on:
+      - ollama
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Ollama service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - app-network
+    restart: unless-stopped
+    # Pull and run Mistral model on startup
+    command: >
+      sh -c "ollama serve &
+             sleep 10 &&
+             ollama pull mistral &&
+             wait"
+
+volumes:
+  ollama-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
