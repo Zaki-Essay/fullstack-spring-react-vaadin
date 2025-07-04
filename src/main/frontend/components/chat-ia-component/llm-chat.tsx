@@ -2,6 +2,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {Send, Bot, User, Loader2, Trash2, Copy, Check, Square} from 'lucide-react';
 import "./style.css";
 import {ChatIaService} from "Frontend/generated/endpoints";
+import ReactMarkdown from 'react-markdown';
+import MarkdownRenderer from "Frontend/components/markdown-message-component/markdown-message";
 
 interface ChatSession {
     id: string;
@@ -326,12 +328,17 @@ export function LlmChat() {
                 ) : (
                     messages.map((message) => (
                         message.content !== '' && (
+
                             <div key={message.id} className={`message ${message.role}`}>
                                 <div className={`message-avatar ${message.role}`}>
-                                    {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
+                                        {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                                 </div>
                                 <div className="message-content">
-                                    <p className="message-text">{message.content}</p>
+                                    <p className="message-text">
+                                        <div className="message-text">
+                                            <MarkdownRenderer content={message.content} />
+                                        </div>
+                                    </p>
                                     <div className="message-actions">
                                         <button
                                             className="copy-button"
@@ -347,6 +354,7 @@ export function LlmChat() {
                                     </div>
                                 </div>
                             </div>
+
                         )
                     ))
                 )}
