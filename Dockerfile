@@ -5,7 +5,7 @@
 # COPY pom.xml mvnw mvnw.cmd .
 # COPY . .
 # RUN mvn -B clean package -DskipTests
-#test
+
 
 # ---- Runtime stage ----
 FROM eclipse-temurin:21-jre
