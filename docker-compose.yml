@@ -3,12 +3,12 @@ version: '3.8'
 services:
   # Your Spring Boot application
   spring-react-vaadin:
-    image: ${DOCKERHUB_USERNAME}/spring-react-vaadin:latest
+    image: ${DOCKERHUB_USERNAME:zikossy}/spring-react-vaadin:latest
     container_name: spring-react-vaadin-app
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=production
+      - SPRING_PROFILES_ACTIVE=dev
       - OLLAMA_HOST=ollama
       - OLLAMA_PORT=11434
       - OLLAMA_MODEL=mistral

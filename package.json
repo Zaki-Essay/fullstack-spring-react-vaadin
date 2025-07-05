@@ -128,7 +128,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "3299a196d631a7655dca34bf4680ae28c87cd22bab200ae6c8c0a0639edb14ba"
+    "hash": "f29bc538c6ba83df12212c0cd896537af9251629dd52ee05742457684ccb8471"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -160,6 +160,7 @@
     "react-syntax-highlighter": "$react-syntax-highlighter",
     "rehype-highlight": "$rehype-highlight",
     "remark-gfm": "$remark-gfm",
-    "react-router": "$react-router"
+    "react-router": "$react-router",
+    "react-router-dom": "$react-router-dom"
   }
 }
