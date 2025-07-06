@@ -18,6 +18,10 @@
     {
       "name" : "ChatIaService",
       "x-class-name" : "me.gaga.springreactvaadin.service.implementation.ChatIaService"
+    },
+    {
+      "name" : "FileUploadService",
+      "x-class-name" : "me.gaga.springreactvaadin.service.implementation.FileUploadService"
     }
   ],
   "paths" : {
@@ -726,6 +730,162 @@
           }
         }
       }
+    },
+    "/FileUploadService/deleteDocument" : {
+      "post" : {
+        "tags" : [
+          "FileUploadService"
+        ],
+        "operationId" : "FileUploadService_deleteDocument_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "documentId" : {
+                    "type" : "string",
+                    "x-java-type" : "java.lang.String"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean",
+                  "x-java-type" : "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/FileUploadService/getAllDocuments" : {
+      "post" : {
+        "tags" : [
+          "FileUploadService"
+        ],
+        "operationId" : "FileUploadService_getAllDocuments_POST",
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "x-java-type" : "java.util.List",
+                  "items" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.DTO.DocumentResponseDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/FileUploadService/uploadFile" : {
+      "post" : {
+        "tags" : [
+          "FileUploadService"
+        ],
+        "operationId" : "FileUploadService_uploadFile_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/com.vaadin.hilla.runtime.transfertypes.File"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "anyOf" : [
+                    {
+                      "$ref" : "#/components/schemas/me.gaga.springreactvaadin.DTO.FileUploadResponseDTO"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/FileUploadService/uploadMultipleFiles" : {
+      "post" : {
+        "tags" : [
+          "FileUploadService"
+        ],
+        "operationId" : "FileUploadService_uploadMultipleFiles_POST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "x-java-type" : "java.util.List",
+                    "items" : {
+                      "anyOf" : [
+                        {
+                          "$ref" : "#/components/schemas/com.vaadin.hilla.runtime.transfertypes.File"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "x-java-type" : "java.util.List",
+                  "items" : {
+                    "anyOf" : [
+                      {
+                        "$ref" : "#/components/schemas/me.gaga.springreactvaadin.DTO.FileUploadResponseDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -901,6 +1061,74 @@
             "format" : "date-time",
             "nullable" : true,
             "x-java-type" : "java.time.LocalDateTime"
+          }
+        }
+      },
+      "me.gaga.springreactvaadin.DTO.DocumentResponseDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-java-type" : "java.lang.String"
+          },
+          "name" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-java-type" : "java.lang.String"
+          },
+          "type" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-java-type" : "java.lang.String"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64",
+            "nullable" : true,
+            "x-java-type" : "java.lang.Long"
+          },
+          "uploadDate" : {
+            "type" : "string",
+            "format" : "date-time",
+            "nullable" : true,
+            "x-java-type" : "java.time.LocalDateTime"
+          },
+          "status" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-java-type" : "java.lang.String"
+          },
+          "chunks" : {
+            "type" : "integer",
+            "format" : "int32",
+            "nullable" : true,
+            "x-java-type" : "java.lang.Integer"
+          }
+        }
+      },
+      "com.vaadin.hilla.runtime.transfertypes.File" : {
+        "type" : "object"
+      },
+      "me.gaga.springreactvaadin.DTO.FileUploadResponseDTO" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "x-java-type" : "boolean"
+          },
+          "message" : {
+            "type" : "string",
+            "nullable" : true,
+            "x-java-type" : "java.lang.String"
+          },
+          "document" : {
+            "nullable" : true,
+            "anyOf" : [
+              {
+                "$ref" : "#/components/schemas/me.gaga.springreactvaadin.DTO.DocumentResponseDTO"
+              }
+            ]
           }
         }
       }

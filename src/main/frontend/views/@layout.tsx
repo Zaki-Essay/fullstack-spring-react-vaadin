@@ -1,6 +1,6 @@
 import {NavLink, Outlet} from "react-router-dom";
 import "./style.css";
-import {SideBar} from "Frontend/components/side-bar-component/side-bar";
+import {SideBar} from "Frontend/components/side-bar/side-bar";
 
 interface LayoutProps {
     userEmail?: string;

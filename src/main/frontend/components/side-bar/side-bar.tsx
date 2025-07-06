@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { createMenuItems } from "@vaadin/hilla-file-router/runtime.js";
 import "./style.css";
 import {
-    BarChart2,
+    BarChart2, Brain,
     ClipboardList,
     Home, Info,
     Lamp,
@@ -14,7 +14,7 @@ import {
     User,
     Users
 } from "lucide-react";
-import {ChatHistory} from "Frontend/components/chat-history-component/chat-history";
+import {ChatHistory} from "Frontend/components/chat-history/chat-history";
 
 interface SidebarProps {
     userEmail?: string;
@@ -70,7 +70,7 @@ export const SideBar = ({ userEmail, onLogout }: SidebarProps) => {
             'Chat Ia': <MessageSquare size={20} />,
             'Index': <Home size={20} />,
             'About': <Info size={20} />,
-            'Contact': <Phone size={20} />
+            'Rag': <Brain size={20} />
         };
         return iconMap[title] || <div style={{ width: 20 }} />;
     };

@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "chat_sessions")
+@Data
 public class ChatSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,4 +1,4 @@
-import CodeBlock from "Frontend/components/code-block-component/code-block";
+import CodeBlock from "Frontend/components/code-block/code-block";
 import React from "react";
 
 interface MarkdownRendererProps {

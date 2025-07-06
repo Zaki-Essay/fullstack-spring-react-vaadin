@@ -3,7 +3,7 @@ import {Send, Bot, User, Loader2, Trash2, Copy, Check, Square} from 'lucide-reac
 import "./style.css";
 import {ChatIaService} from "Frontend/generated/endpoints";
 import ReactMarkdown from 'react-markdown';
-import MarkdownRenderer from "Frontend/components/markdown-message-component/markdown-message";
+import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
 
 interface ChatSession {
     id: string;

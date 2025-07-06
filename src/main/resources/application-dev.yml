@@ -74,9 +74,12 @@ spring:
     activate:
       on-profile: dev
 
-vaadin:
-  productionMode: false
-  launch-browser: false
+#vaadin:
+  #productionMode: true
+  #launch-browser: false
+app:
+  upload:
+    dir: uploads
 
 logging:
   level:
