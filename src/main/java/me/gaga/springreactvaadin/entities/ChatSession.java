@@ -13,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "chat_sessions")
-@Data
+@Getter
+@Setter
 public class ChatSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

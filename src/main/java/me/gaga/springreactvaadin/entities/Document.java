@@ -1,16 +1,13 @@
 package me.gaga.springreactvaadin.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
 @Entity
 @Table(name = "documents")
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +33,7 @@ public class Document {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private DocumentStatus status;
 
     @Column
     private Integer chunks;
