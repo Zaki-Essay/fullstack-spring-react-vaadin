@@ -8,10 +8,10 @@ import java.util.Date;
 
 
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Data
 public class ChatMessage {
 
     @Id
