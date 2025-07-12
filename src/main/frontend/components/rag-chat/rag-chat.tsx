@@ -18,8 +18,9 @@ import {
     CheckCircle
 } from 'lucide-react';
 import "./style.css";
-import {FileUploadService} from "Frontend/generated/endpoints";
+import { FileUploadService, RagService } from "Frontend/generated/endpoints";
 import DocumentResponseDTO from "Frontend/generated/me/gaga/springreactvaadin/DTO/DocumentResponseDTO";
+import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
 
 interface Document {
     id: string;
@@ -27,7 +28,7 @@ interface Document {
     type: string;
     size: number;
     uploadDate: Date;
-    status: string; //'processing' | 'ready' | 'error'
+    status: string;
     chunks?: number;
 }
 
@@ -55,22 +56,28 @@ export default function RagChat() {
     const [activeTab, setActiveTab] = useState<'chat' | 'documents' | 'knowledge'>('chat');
     const [documents, setDocuments] = useState<Document[]>([]);
     const [ragStats, setRagStats] = useState<RAGStats>({
-        totalDocuments: 2,
-        totalChunks: 245,
-        indexSize: '15.2 MB',
-        lastUpdated: new Date('2024-01-15T10:30:00')
+        totalDocuments: 0,
+        totalChunks: 0,
+        indexSize: '0 MB',
+        lastUpdated: new Date()
     });
     const [dragOver, setDragOver] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const streamSubscriptionRef = useRef<any>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    // Get current user ID
+    const getCurrentUserId = () => {
+        return 'current-user-id'; // Replace with actual user ID
+    };
 
     const buildDocumentFromDocumentResponse = (documentResponse: DocumentResponseDTO): Document => {
         return {
@@ -84,13 +91,44 @@ export default function RagChat() {
         };
     };
 
-    useEffect(() => {
-        scrollToBottom();
-        FileUploadService.getAllDocuments().then((response) => {
+    const loadDocuments = async () => {
+        try {
+            const response = await FileUploadService.getAllDocuments();
             const documents = response.map(buildDocumentFromDocumentResponse);
             setDocuments(documents);
-        });
-    }, [messages, documents]);
+
+            // Update RAG stats
+            const processedDocs = documents.filter(doc => doc.status === 'processed');
+            const totalChunks = processedDocs.reduce((sum, doc) => sum + (doc.chunks || 0), 0);
+
+            setRagStats({
+                totalDocuments: processedDocs.length,
+                totalChunks: totalChunks,
+                indexSize: `${(totalChunks * 0.5).toFixed(1)} MB`, // Estimate
+                lastUpdated: new Date()
+            });
+        } catch (error) {
+            console.error('Error loading documents:', error);
+        }
+    };
+
+    const loadProcessedDocuments = async () => {
+        try {
+            const processedDocs = await RagService.getProcessedDocuments();
+            const documents = processedDocs.map(buildDocumentFromDocumentResponse);
+            setDocuments(documents);
+        } catch (error) {
+            console.error('Error loading processed documents:', error);
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    useEffect(() => {
+        loadDocuments();
+    }, []);
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return '0 Bytes';
@@ -116,25 +154,97 @@ export default function RagChat() {
         setIsLoading(true);
         setIsStreaming(true);
 
-        // Simulate RAG response with sources
-        setTimeout(() => {
-            const assistantMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                content: `Based on the documents in your knowledge base, here's what I found:\n\n${messageContent.includes('company') ? 'According to the company handbook, our organization follows a structured approach to employee development and performance management.' : 'The information you\'re looking for relates to several key concepts covered in the uploaded documents.'}\n\nThis response is generated using Retrieval-Augmented Generation (RAG) technology, which searches through your uploaded documents to provide contextually relevant answers.`,
-                role: 'assistant',
-                timestamp: new Date(),
-                sources: messageContent.includes('company') ? ['company-handbook.pdf', 'product-specs.docx'] : ['research-paper.pdf']
-            };
+        try {
+            const userId = getCurrentUserId();
 
-            setMessages(prev => [...prev, assistantMessage]);
+            const assistantMessageId = (Date.now() + 1).toString();
+            const assistantTimestamp = new Date();
+
+            setMessages(prev => [...prev, {
+                id: assistantMessageId,
+                content: '',
+                role: 'assistant',
+                timestamp: assistantTimestamp
+            }]);
+
+            // Use RAG service instead of regular chat
+            const subscription = currentChatId ?
+                RagService.queryWithRagAndHistory(messageContent, userId, parseInt(currentChatId)) :
+                RagService.queryWithRag(messageContent, userId);
+
+            streamSubscriptionRef.current = subscription;
+
+            let fullAssistantResponse = '';
+
+            subscription.onNext(chunk => {
+                if (!streamSubscriptionRef.current) return;
+
+                fullAssistantResponse += chunk;
+                setIsLoading(false);
+                setMessages(prevMessages => {
+                    return prevMessages.map(msg =>
+                        msg.id === assistantMessageId
+                            ? { ...msg, content: msg.content + chunk }
+                            : msg
+                    );
+                });
+            });
+
+            subscription.onComplete(async () => {
+                setIsLoading(false);
+                setIsStreaming(false);
+                streamSubscriptionRef.current = null;
+
+                // Add sources information (you might want to modify RagService to return sources)
+                setMessages(prevMessages => {
+                    return prevMessages.map(msg =>
+                        msg.id === assistantMessageId
+                            ? { ...msg, sources: ['Retrieved from knowledge base'] }
+                            : msg
+                    );
+                });
+            });
+
+            subscription.onError((error) => {
+                console.error('RAG query error:', error);
+                setIsLoading(false);
+                setIsStreaming(false);
+                streamSubscriptionRef.current = null;
+
+                setMessages(prevMessages => {
+                    return prevMessages.map(msg =>
+                        msg.id === assistantMessageId
+                            ? { ...msg, content: msg.content + '\n\n[Error: Failed to complete response]' }
+                            : msg
+                    );
+                });
+            });
+
+        } catch (error) {
+            console.error('Error starting RAG stream:', error);
             setIsLoading(false);
             setIsStreaming(false);
-        }, 2000);
+            streamSubscriptionRef.current = null;
+
+            // Remove the user message if we failed to process it
+            setMessages(prev => prev.slice(0, -1));
+        }
     };
 
     const handleStopGeneration = () => {
-        setIsLoading(false);
-        setIsStreaming(false);
+        if (streamSubscriptionRef.current) {
+            if (typeof streamSubscriptionRef.current.cancel === 'function') {
+                streamSubscriptionRef.current.cancel();
+            } else if (typeof streamSubscriptionRef.current.unsubscribe === 'function') {
+                streamSubscriptionRef.current.unsubscribe();
+            } else if (typeof streamSubscriptionRef.current.abort === 'function') {
+                streamSubscriptionRef.current.abort();
+            }
+
+            streamSubscriptionRef.current = null;
+            setIsLoading(false);
+            setIsStreaming(false);
+        }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -145,8 +255,12 @@ export default function RagChat() {
     };
 
     const handleClearChat = () => {
+        if (streamSubscriptionRef.current) {
+            handleStopGeneration();
+        }
         setMessages([]);
         setInputValue('');
+        setCurrentChatId(null);
     };
 
     const handleCopyMessage = async (messageId: string, content: string) => {
@@ -159,16 +273,35 @@ export default function RagChat() {
         }
     };
 
-    const handleFileUpload = (files: FileList | null) => {
+    const handleFileUpload = async (files: FileList | null) => {
         if (!files) return;
 
-        Array.from(files).forEach(file => {
+        const uploadPromises = Array.from(files).map(async (file) => {
+            try {
+                const response = await FileUploadService.uploadFile(file);
+                if (response.success && response.document) {
+                    const document = buildDocumentFromDocumentResponse(response.document);
+                    setDocuments(prev => [...prev, document]);
 
-            FileUploadService.uploadFile(file).then(response => {
-                const document = buildDocumentFromDocumentResponse(response.document!);
-                setDocuments(prev => [...prev, document]);
-            });
+                    // Process the document for RAG
+                    await RagService.processDocument(document.id);
+
+                    // Update document status
+                    setDocuments(prev => prev.map(doc =>
+                        doc.id === document.id
+                            ? { ...doc, status: 'processed' }
+                            : doc
+                    ));
+
+                    // Refresh stats
+                    await loadDocuments();
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
         });
+
+        await Promise.all(uploadPromises);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -187,10 +320,16 @@ export default function RagChat() {
         handleFileUpload(e.dataTransfer.files);
     };
 
-    const handleDeleteDocument = (docId: string) => {
-        FileUploadService.deleteDocument(docId).then(() => {
-            setDocuments(prev => prev.filter(doc => doc.id !== docId));
-        });
+    const handleDeleteDocument = async (docId: string) => {
+        try {
+            const success = await FileUploadService.deleteDocument(docId);
+            if (success) {
+                setDocuments(prev => prev.filter(doc => doc.id !== docId));
+                await loadDocuments(); // Refresh stats
+            }
+        } catch (error) {
+            console.error('Error deleting document:', error);
+        }
     };
 
     const filteredDocuments = documents.filter(doc =>
@@ -210,42 +349,44 @@ export default function RagChat() {
                 </div>
             ) : (
                 messages.map((message) => (
-                    <div key={message.id} className={`message ${message.role}`}>
-                        <div className={`message-avatar ${message.role}`}>
-                            {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
-                        </div>
-                        <div className="message-content">
-                            <div className="message-text">
-                                {message.content}
+                    message.content !== '' && (
+                        <div key={message.id} className={`message ${message.role}`}>
+                            <div className={`message-avatar ${message.role}`}>
+                                {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                             </div>
-                            {message.sources && (
-                                <div className="message-sources">
-                                    <p className="sources-label">Sources:</p>
-                                    <div className="sources-list">
-                                        {message.sources.map((source, index) => (
-                                            <span key={index} className="source-tag">
-                        <FileText size={12} />
-                                                {source}
-                      </span>
-                                        ))}
-                                    </div>
+                            <div className="message-content">
+                                <div className="message-text">
+                                    <MarkdownRenderer content={message.content} />
                                 </div>
-                            )}
-                            <div className="message-actions">
-                                <button
-                                    className="copy-button"
-                                    onClick={() => handleCopyMessage(message.id, message.content)}
-                                    title="Copy message"
-                                >
-                                    {copiedMessageId === message.id ? (
-                                        <Check size={16} />
-                                    ) : (
-                                        <Copy size={16} />
-                                    )}
-                                </button>
+                                {message.sources && (
+                                    <div className="message-sources">
+                                        <p className="sources-label">Sources:</p>
+                                        <div className="sources-list">
+                                            {message.sources.map((source, index) => (
+                                                <span key={index} className="source-tag">
+                                                    <FileText size={12} />
+                                                    {source}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="message-actions">
+                                    <button
+                                        className="copy-button"
+                                        onClick={() => handleCopyMessage(message.id, message.content)}
+                                        title="Copy message"
+                                    >
+                                        {copiedMessageId === message.id ? (
+                                            <Check size={16} />
+                                        ) : (
+                                            <Copy size={16} />
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )
                 ))
             )}
             {isLoading && (
@@ -309,10 +450,10 @@ export default function RagChat() {
                                 <span className="document-type">{doc.type}</span>
                                 <span className="document-size">{formatFileSize(doc.size)}</span>
                                 <span className="document-date">
-                  {doc.uploadDate.toLocaleDateString()}
-                </span>
+                                    {doc.uploadDate.toLocaleDateString()}
+                                </span>
                             </div>
-                            {doc.status === 'ready' && (
+                            {doc.status === 'processed' && (
                                 <div className="document-chunks">
                                     {doc.chunks} chunks processed
                                 </div>
@@ -325,7 +466,7 @@ export default function RagChat() {
                                     Processing...
                                 </div>
                             )}
-                            {doc.status === 'ready' && (
+                            {doc.status === 'processed' && (
                                 <div className="status-ready">
                                     <CheckCircle size={16} />
                                     Ready
@@ -364,7 +505,7 @@ export default function RagChat() {
         <div className="knowledge-container">
             <div className="knowledge-header">
                 <h2>Knowledge Base Statistics</h2>
-                <button className="refresh-button" title="Refresh statistics">
+                <button className="refresh-button" onClick={loadDocuments} title="Refresh statistics">
                     <RefreshCw size={18} />
                 </button>
             </div>
@@ -410,33 +551,17 @@ export default function RagChat() {
                     </div>
                 </div>
             </div>
-
-            <div className="knowledge-settings">
-                <h3>RAG Configuration</h3>
-                <div className="setting-item">
-                    <label>Chunk Size</label>
-                    <select className="setting-select">
-                        <option value="512">512 tokens</option>
-                        <option value="1024" selected>1024 tokens</option>
-                        <option value="2048">2048 tokens</option>
-                    </select>
-                </div>
-                <div className="setting-item">
-                    <label>Chunk Overlap</label>
-                    <select className="setting-select">
-                        <option value="50">50 tokens</option>
-                        <option value="100" selected>100 tokens</option>
-                        <option value="200">200 tokens</option>
-                    </select>
-                </div>
-                <div className="setting-item">
-                    <label>Similarity Threshold</label>
-                    <input type="range" min="0" max="1" step="0.1" defaultValue="0.7" className="setting-slider" />
-                    <span className="slider-value">0.7</span>
-                </div>
-            </div>
         </div>
     );
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (streamSubscriptionRef.current) {
+                handleStopGeneration();
+            }
+        };
+    }, []);
 
     return (
         <div className="rag-container">
@@ -498,15 +623,15 @@ export default function RagChat() {
             {activeTab === 'chat' && (
                 <div className="rag-input-container">
                     <div className="rag-input-wrapper">
-            <textarea
-                ref={inputRef}
-                className="rag-input"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask questions about your documents... (Enter to send, Shift+Enter for new line)"
-                disabled={isLoading}
-            />
+                        <textarea
+                            ref={inputRef}
+                            className="rag-input"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Ask questions about your documents... (Enter to send, Shift+Enter for new line)"
+                            disabled={isLoading}
+                        />
                         {isStreaming ? (
                             <button
                                 className="stop-button-input"

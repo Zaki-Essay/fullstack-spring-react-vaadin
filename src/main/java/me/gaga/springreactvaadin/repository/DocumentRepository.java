@@ -12,12 +12,12 @@ import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, String> {
-    List<Document> findByStatus(Document.Status status);
+    List<Document> findByStatus(DocumentStatus status);
     List<Document> findByNameContainingIgnoreCase(String name);
     long countByStatus(DocumentStatus status);
 
     @Query("SELECT COALESCE(SUM(d.chunks), 0) FROM Document d WHERE d.status = :status")
     long sumChunksByStatus(@Param("status") DocumentStatus status);
 
-    List<Document> findByStatusAndUploadDateAfter(Document.Status status, LocalDateTime date);
+    List<Document> findByStatusAndUploadDateAfter(DocumentStatus status, LocalDateTime date);
 }
