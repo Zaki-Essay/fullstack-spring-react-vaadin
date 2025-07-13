@@ -1,22 +1,20 @@
 package me.gaga.springreactvaadin.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "chat_sessions")
+@Getter
+@Setter
 public class ChatSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
