@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.gaga.springreactvaadin.entities.DocumentStatus;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,6 @@ public class DocumentResponseDTO {
     private String type;
     private Long size;
     private LocalDateTime uploadDate;
-    private String status;
+    private DocumentStatus status;
     private Integer chunks;
 }

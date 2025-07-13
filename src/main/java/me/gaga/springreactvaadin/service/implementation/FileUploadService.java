@@ -159,7 +159,7 @@ public class FileUploadService {
                 .type(document.getType())
                 .size(document.getSize())
                 .uploadDate(document.getUploadDate())
-                .status(document.getStatus().name().toLowerCase())
+                .status(document.getStatus())
                 .chunks(document.getChunks())
                 .build();
     }

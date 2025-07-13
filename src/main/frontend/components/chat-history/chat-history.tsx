@@ -2,30 +2,9 @@ import React, {useEffect, useState} from "react";
 import {ChatIaService} from "Frontend/generated/endpoints";
 import {Calendar,History, MessageSquare, Plus, Search, Trash2} from "lucide-react";
 import "./style.css";
+import {BackendChatSession, ChatSession} from "Frontend/types/index";
 
-interface ChatSession {
-    id: string;
-    title: string;
-    lastMessage: string;
-    timestamp: Date;
-    messageCount: number;
-}
 
-interface Message {
-    id: string;
-    content: string;
-    role: 'user' | 'assistant';
-    timestamp: Date;
-}
-
-// Define the shape of data coming from the backend
-interface BackendChatSession {
-    id?: string;
-    title?: string;
-    lastMessage?: string;
-    timestamp?: string; // Backend likely returns string timestamps
-    messageCount?: number;
-}
 
 interface ChatHistoryProps {
     isCollapsed: boolean;
@@ -34,7 +13,7 @@ interface ChatHistoryProps {
     currentChatId?: string;
 }
 
-// Updated ChatHistory component with backend integration
+
 export const ChatHistory: React.FC<ChatHistoryProps> = ({
                                                             isCollapsed,
                                                             onSelectChat,
@@ -45,6 +24,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
     const [searchTerm, setSearchTerm] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
     const [loading, setLoading] = useState(false);
+
 
     // Get current user ID (you'll need to implement this based on your auth system)
     const getCurrentUserId = () => {
