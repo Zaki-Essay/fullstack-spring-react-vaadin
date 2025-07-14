@@ -4,37 +4,7 @@ import "./style.css";
 import {ChatIaService} from "Frontend/generated/endpoints";
 import ReactMarkdown from 'react-markdown';
 import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
-
-interface ChatSession {
-    id: string;
-    title: string;
-    lastMessage: string;
-    timestamp: Date;
-    messageCount: number;
-}
-
-interface Message {
-    id: string;
-    content: string;
-    role: 'user' | 'assistant';
-    timestamp: Date;
-}
-
-// Define the shape of data coming from the backend
-interface BackendMessage {
-    id?: string;
-    content?: string;
-    role?: string;
-    timestamp?: string; // Backend likely returns string timestamps
-}
-
-interface BackendChatSession {
-    id?: string;
-    title?: string;
-    lastMessage?: string;
-    timestamp?: string;
-    messageCount?: number;
-}
+import {BackendMessage, Message} from "Frontend/types";
 
 export function LlmChat() {
     const [messages, setMessages] = useState<Message[]>([]);

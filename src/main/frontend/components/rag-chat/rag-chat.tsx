@@ -21,31 +21,9 @@ import "./style.css";
 import { FileUploadService, RagService } from "Frontend/generated/endpoints";
 import DocumentResponseDTO from "Frontend/generated/me/gaga/springreactvaadin/DTO/DocumentResponseDTO";
 import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
+import {DocumentStatus, Document,Message, RAGStats} from "Frontend/types";
 
-interface Document {
-    id: string;
-    name: string;
-    type: string;
-    size: number;
-    uploadDate: Date;
-    status: string;
-    chunks?: number;
-}
 
-interface Message {
-    id: string;
-    content: string;
-    role: 'user' | 'assistant';
-    timestamp: Date;
-    sources?: string[];
-}
-
-interface RAGStats {
-    totalDocuments: number;
-    totalChunks: number;
-    indexSize: string;
-    lastUpdated: Date;
-}
 
 export default function RagChat() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -98,7 +76,7 @@ export default function RagChat() {
             setDocuments(documents);
 
             // Update RAG stats
-            const processedDocs = documents.filter(doc => doc.status === 'processed');
+            const processedDocs = documents.filter(doc => doc.status === DocumentStatus.COMPLETED);
             const totalChunks = processedDocs.reduce((sum, doc) => sum + (doc.chunks || 0), 0);
 
             setRagStats({
@@ -289,7 +267,7 @@ export default function RagChat() {
                     // Update document status
                     setDocuments(prev => prev.map(doc =>
                         doc.id === document.id
-                            ? { ...doc, status: 'processed' }
+                            ? { ...doc, status: DocumentStatus.COMPLETED }
                             : doc
                     ));
 
@@ -453,26 +431,26 @@ export default function RagChat() {
                                     {doc.uploadDate.toLocaleDateString()}
                                 </span>
                             </div>
-                            {doc.status === 'processed' && (
+                            {doc.status === DocumentStatus.COMPLETED && (
                                 <div className="document-chunks">
                                     {doc.chunks} chunks processed
                                 </div>
                             )}
                         </div>
                         <div className="document-status">
-                            {doc.status === 'processing' && (
+                            {doc.status === DocumentStatus.PROCESSING && (
                                 <div className="status-processing">
                                     <Loader2 size={16} className="animate-spin" />
                                     Processing...
                                 </div>
                             )}
-                            {doc.status === 'processed' && (
+                            {doc.status === DocumentStatus.COMPLETED && (
                                 <div className="status-ready">
                                     <CheckCircle size={16} />
                                     Ready
                                 </div>
                             )}
-                            {doc.status === 'error' && (
+                            {doc.status === DocumentStatus.FAILED && (
                                 <div className="status-error">
                                     <AlertCircle size={16} />
                                     Error

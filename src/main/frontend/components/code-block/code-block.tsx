@@ -1,13 +1,6 @@
 import React, {useRef, useState} from "react";
 import {Check, Copy} from "lucide-react";
 
-interface Message {
-    id: string;
-    content: string;
-    role: 'user' | 'assistant';
-    timestamp: Date;
-}
-
 interface CodeBlockProps {
     children: React.ReactNode;
     language?: string;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import { createMenuItems } from "@vaadin/hilla-file-router/runtime.js";
 import "./style.css";
 import {
@@ -7,7 +7,7 @@ import {
     ClipboardList,
     Home, Info,
     Lamp,
-    LayoutDashboard,
+    LayoutDashboard, LogIn,
     LogOut,
     MessageSquare, Phone,
     Settings,
@@ -15,17 +15,33 @@ import {
     Users
 } from "lucide-react";
 import {ChatHistory} from "Frontend/components/chat-history/chat-history";
+import {useAuth} from "Frontend/context/AuthContext";
+import {MenuItem} from "@vaadin/hilla-file-router/types.js";
+import {useNavigate} from "react-router";
 
-interface SidebarProps {
-    userEmail?: string;
-    onLogout?: () => void;
-}
 
-export const SideBar = ({ userEmail, onLogout }: SidebarProps) => {
+
+
+export const SideBar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [currentChatId, setCurrentChatId] = useState<string>('');
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
+    const filterNavigationItems = <T = unknown>(items: ReadonlyArray<MenuItem<T>>): MenuItem<T>[] => {
+        // Define paths you want to ignore/hide
+        const ignoredPaths: string[] = ['/login', '/register'];
+
+        return items.filter((item: MenuItem<T>) => {
+            // Filter out items with ignored paths
+            return !ignoredPaths.includes(item.to);
+        });
+    };
+    const handleNavigate = (route: string) => {
+        navigate(route);
+    };
 
     // Check if device is mobile
     useEffect(() => {
@@ -163,7 +179,7 @@ export const SideBar = ({ userEmail, onLogout }: SidebarProps) => {
 
                 {/* Navigation */}
                 <nav className="main-nav">
-                    {createMenuItems().map((item, index) => (
+                    {filterNavigationItems(createMenuItems()).map((item: MenuItem, index: number) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
@@ -193,23 +209,29 @@ export const SideBar = ({ userEmail, onLogout }: SidebarProps) => {
                 />
 
                 {/* User Info Section */}
-                {userEmail && (
+                {user?.email ? (
                     <div className="user-info">
                         <div className="user-avatar">
-                            {getUserInitials(userEmail)}
+                            {getUserInitials(user?.email)}
                         </div>
-                        <span className="user-email" title={userEmail}>
-                            {userEmail}
+                        <span className="user-email" title={user?.email}>
+                            {user?.email}
                         </span>
                         <button
                             className="logout-btn"
-                            onClick={onLogout}
+                            onClick={logout}
                             title="Sign out"
                         >
                             <LogOut/>
                         </button>
                     </div>
-                )}
+                ):
+                    <div className="user-info">
+                        <div onClick={()=>handleNavigate('/login')} className="login-btn">
+                                <LogIn/>
+                        </div>
+                    </div>
+                }
             </aside>
         </>
     );
