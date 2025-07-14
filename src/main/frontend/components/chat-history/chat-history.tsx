@@ -3,6 +3,7 @@ import {ChatIaService} from "Frontend/generated/endpoints";
 import {Calendar,History, MessageSquare, Plus, Search, Trash2} from "lucide-react";
 import "./style.css";
 import {BackendChatSession, ChatSession} from "Frontend/types/index";
+import {useAuth} from "Frontend/context/AuthContext";
 
 
 
@@ -26,10 +27,11 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
     const [loading, setLoading] = useState(false);
 
 
+
+    const user = useAuth();
     // Get current user ID (you'll need to implement this based on your auth system)
     const getCurrentUserId = () => {
-        // Replace this with your actual user ID retrieval logic
-        return 'current-user-id'; // This should come from your authentication system
+        return user.user?.id!+"" // This should come from your authentication system
     };
 
     // Helper function to safely convert backend data to ChatSession
@@ -92,6 +94,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
     // Load sessions on component mount
     useEffect(() => {
         loadChatSessions();
+        getCurrentUserId()
     }, []);
 
     // Handle search with debouncing

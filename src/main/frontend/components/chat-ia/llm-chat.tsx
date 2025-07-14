@@ -5,6 +5,7 @@ import {ChatIaService} from "Frontend/generated/endpoints";
 import ReactMarkdown from 'react-markdown';
 import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
 import {BackendMessage, Message} from "Frontend/types";
+import {useAuth} from "Frontend/context/AuthContext";
 
 export function LlmChat() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -23,11 +24,13 @@ export function LlmChat() {
 
     useEffect(() => {
         scrollToBottom();
+        getCurrentUserId()
     }, [messages]);
 
-    // Get current user ID
+    const user = useAuth();
+    // Get current user ID (you'll need to implement this based on your auth system)
     const getCurrentUserId = () => {
-        return 'current-user-id'; // Replace with actual user ID
+        return user.user?.id!+"" // This should come from your authentication system
     };
 
     // Helper function to safely convert backend message data
