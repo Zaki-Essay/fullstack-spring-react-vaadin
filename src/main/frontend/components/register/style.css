@@ -1,0 +1,392 @@
+/* Auth Forms CSS - Based on RAG Chat Component Styles */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 1rem;
+}
+
+.login-form, .register-form {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.login-form h2, .register-form h2 {
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.login-form h2::before, .register-form h2::before {
+    content: "🔐";
+    font-size: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: #666666;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #333333;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.form-group input:disabled {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    padding-right: 3rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #666666;
+    transition: all 0.2s ease-in-out;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.toggle-password:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1976d2;
+}
+
+.login-form button[type="submit"],
+.register-form button[type="submit"] {
+    width: 100%;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-top: 1rem;
+}
+
+.login-form button[type="submit"]:hover:not(:disabled),
+.register-form button[type="submit"]:hover:not(:disabled) {
+    background-color: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form button[type="submit"]:disabled,
+.register-form button[type="submit"]:disabled {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.error-message {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-message::before {
+    content: "⚠️";
+    font-size: 1rem;
+}
+
+.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.success-message::before {
+    content: "✅";
+    font-size: 1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666666;
+    font-size: 0.9rem;
+}
+
+.auth-footer a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.auth-footer a:hover {
+    color: #1565c0;
+    text-decoration: underline;
+}
+
+/* Loading state */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+/* Form validation states */
+.form-group.error input {
+    border-color: #f44336;
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+}
+
+.form-group.success input {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.field-error {
+    color: #f44336;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.field-error::before {
+    content: "⚠️";
+    font-size: 0.75rem;
+}
+
+/* Registration form specific styles */
+.register-form .form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.register-form .form-row .form-group {
+    flex: 1;
+}
+
+.register-form .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.register-form .checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.register-form .checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #666666;
+}
+
+.register-form .checkbox-group a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+.register-form .checkbox-group a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 0.5rem;
+    }
+
+    .login-form, .register-form {
+        padding: 1.5rem;
+    }
+
+    .register-form .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .register-form .form-row .form-group {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Auth navigation links */
+.auth-navigation {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666666;
+    font-size: 0.9rem;
+}
+
+.auth-navigation span {
+    color: #1976d2;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+
+.auth-navigation span:hover {
+    color: #1565c0;
+    border-bottom-color: #1565c0;
+    transform: translateY(-1px);
+}
+
+.auth-navigation span:active {
+    transform: translateY(0);
+}
+
+/* Additional auth-specific utilities */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    color: #666666;
+    font-size: 0.875rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.social-login-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    color: #666666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-bottom: 0.5rem;
+}
+
+.social-login-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: rgba(25, 118, 210, 0.5);
+    color: #1976d2;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.forgot-password a {
+    color: #1976d2;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.forgot-password a:hover {
+    color: #1565c0;
+    text-decoration: underline;
+}

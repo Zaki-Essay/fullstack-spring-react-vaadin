@@ -235,6 +235,23 @@
     overflow: hidden;
 }
 
+.sidebar .login-btn {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: var(--lumo-space-s) var(--lumo-space-m);
+    background: transparent;
+    border: 1px solid var(--lumo-contrast-10pct);
+    border-radius: var(--lumo-border-radius-m);
+    color: var(--lumo-secondary-text-color);
+    font-size: var(--lumo-font-size-s);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
 .sidebar .logout-btn::before {
     content: '';
     position: absolute;
@@ -255,6 +272,16 @@
     rgba(211, 47, 47, 0.05));
     border-color: var(--lumo-error-color-50pct);
     color: var(--lumo-error-color);
+    transform: translateY(-1px);
+    box-shadow: var(--lumo-box-shadow-xs);
+}
+
+.sidebar .login-btn:hover {
+    background: linear-gradient(135deg,
+    var(--lumo-success-color-10pct),
+    rgba(211, 47, 47, 0.05));
+    border-color: var(--lumo-success-color-50pct);
+    color: var(--lumo-success-color);
     transform: translateY(-1px);
     box-shadow: var(--lumo-box-shadow-xs);
 }

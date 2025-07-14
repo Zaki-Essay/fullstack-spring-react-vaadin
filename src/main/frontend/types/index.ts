@@ -50,3 +50,36 @@ export interface RAGStats {
     indexSize: string;
     lastUpdated: Date;
 }
+
+export interface AuthState {
+    isAuthenticated: boolean;
+    user: User | null;
+    loading: boolean;
+    error: string | null;
+}
+
+export interface User {
+    username: string;
+    email: string;
+    role: string;
+}
+
+export interface LoginCredentials {
+    username: string;
+    password: string;
+}
+
+export interface RegisterCredentials {
+    username: string;
+    password: string;
+    email: string;
+}
+
+export type AuthAction =
+    | { type: 'LOGIN_START' }
+    | { type: 'LOGIN_SUCCESS'; payload: User }
+    | { type: 'LOGIN_FAILURE'; payload: string }
+    | { type: 'LOGOUT' }
+    | { type: 'SET_USER'; payload: User | null }
+    | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'CLEAR_ERROR' };
