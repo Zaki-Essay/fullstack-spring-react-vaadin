@@ -158,6 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const response = await AuthService.getCurrentUser();
             return response ? {
+                id: response.id!,
                 username: response.username!,
                 email: response.email!,
                 role: response.role!
