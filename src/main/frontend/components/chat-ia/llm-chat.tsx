@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import MarkdownRenderer from "Frontend/components/markdown-message/markdown-message";
 import {BackendMessage, Message} from "Frontend/types";
 import {useAuth} from "Frontend/context/AuthContext";
+import {useLocation} from "react-router";
 
 export function LlmChat() {
     const [messages, setMessages] = useState<Message[]>([]);

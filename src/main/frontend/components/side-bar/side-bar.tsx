@@ -121,11 +121,8 @@ export const SideBar = () => {
         const isAlreadyOnRoute = currentPath === targetRoute;
 
         if (isAlreadyOnRoute) {
-            console.log("hey")
             // If already on the correct route, just dispatch the event immediately
-            window.dispatchEvent(new CustomEvent('selectChat', {
-                detail: { chatId, route: targetRoute, isDirectSelection: true }
-            }));
+            window.dispatchEvent(new CustomEvent('selectChat', { detail: { chatId } }));
         } else {
             // Navigate first, then dispatch
             navigate(targetRoute);
