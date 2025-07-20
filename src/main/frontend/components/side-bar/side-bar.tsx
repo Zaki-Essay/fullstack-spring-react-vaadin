@@ -108,8 +108,30 @@ export const SideBar = () => {
     // Handle chat selection - communicate with main chat component
     const handleSelectChat = (chatId: string) => {
         setCurrentChatId(chatId);
-        // You can use custom events, context, or state management to communicate with the main chat component
-        window.dispatchEvent(new CustomEvent('selectChat', { detail: { chatId } }));
+
+        const currentPath = window.location.pathname;
+        let targetRoute = '/chat-ia'; // default
+
+        if (currentPath.includes('/rag')) {
+            targetRoute = '/rag';
+        } else if (currentPath.includes('/chat-ia')) {
+            targetRoute = '/chat-ia';
+        }
+
+        const isAlreadyOnRoute = currentPath === targetRoute;
+
+        if (isAlreadyOnRoute) {
+            // If already on the correct route, just dispatch the event immediately
+            window.dispatchEvent(new CustomEvent('selectChat', { detail: { chatId } }));
+        } else {
+            // Navigate first, then dispatch
+            navigate(targetRoute);
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('selectChat', {
+                    detail: { chatId, route: targetRoute, isDirectSelection: false }
+                }));
+            }, 100);
+        }
 
         if (isMobile) {
             setIsMobileOpen(false);

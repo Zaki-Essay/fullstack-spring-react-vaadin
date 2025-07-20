@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {ChatIaService} from "Frontend/generated/endpoints";
-import {Calendar,History, MessageSquare, Plus, Search, Trash2} from "lucide-react";
+import {Calendar, History, MessageSquare, Plus, Search, Trash2} from "lucide-react";
 import "./style.css";
-import {BackendChatSession, ChatSession} from "Frontend/types/index";
-
-
+import {BackendChatSession, ChatSession} from "Frontend/types";
+import {useAuth} from "Frontend/context/AuthContext";
 
 interface ChatHistoryProps {
     isCollapsed: boolean;
@@ -12,7 +11,6 @@ interface ChatHistoryProps {
     onNewChat: () => void;
     currentChatId?: string;
 }
-
 
 export const ChatHistory: React.FC<ChatHistoryProps> = ({
                                                             isCollapsed,
@@ -25,11 +23,15 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
     const [isExpanded, setIsExpanded] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const { user, isAuthenticated } = useAuth();
 
-    // Get current user ID (you'll need to implement this based on your auth system)
-    const getCurrentUserId = () => {
-        // Replace this with your actual user ID retrieval logic
-        return 'current-user-id'; // This should come from your authentication system
+    // Get current user ID with proper validation
+    const getCurrentUserId = (): string | null => {
+        if (!isAuthenticated || !user?.id) {
+            console.warn('User not authenticated or user ID not available');
+            return null;
+        }
+        return user.id.toString();
     };
 
     // Helper function to safely convert backend data to ChatSession
@@ -51,19 +53,29 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
 
     // Load chat sessions from backend
     const loadChatSessions = async () => {
+        const userId = getCurrentUserId();
+        if (!userId) {
+            console.warn('Cannot load chat sessions: user not authenticated');
+            setChatSessions([]);
+            return;
+        }
+
         setLoading(true);
         try {
-            const userId = getCurrentUserId();
+            console.log('Loading chat sessions for user:', userId);
             const sessions = await ChatIaService.getChatSessions(userId);
+            console.log('Received sessions:', sessions);
 
             // Convert and filter valid sessions
             const validSessions = sessions
                 .map(convertToChatSession)
                 .filter((session): session is ChatSession => session !== null);
 
+            console.log('Valid sessions after conversion:', validSessions);
             setChatSessions(validSessions);
         } catch (error) {
             console.error('Error loading chat sessions:', error);
+            setChatSessions([]);
         } finally {
             setLoading(false);
         }
@@ -71,9 +83,15 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
 
     // Search chat sessions
     const searchChatSessions = async (searchTerm: string) => {
+        const userId = getCurrentUserId();
+        if (!userId) {
+            console.warn('Cannot search chat sessions: user not authenticated');
+            return;
+        }
+
         setLoading(true);
         try {
-            const userId = getCurrentUserId();
+            console.log('Searching chat sessions for user:', userId, 'term:', searchTerm);
             const sessions = await ChatIaService.searchChatSessions(userId, searchTerm);
 
             // Convert and filter valid sessions
@@ -84,18 +102,29 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
             setChatSessions(validSessions);
         } catch (error) {
             console.error('Error searching chat sessions:', error);
+            setChatSessions([]);
         } finally {
             setLoading(false);
         }
     };
 
-    // Load sessions on component mount
+    // Load sessions when user authentication status changes
     useEffect(() => {
-        loadChatSessions();
-    }, []);
+        console.log('Auth state changed - isAuthenticated:', isAuthenticated, 'user:', user);
+
+        if (isAuthenticated && user?.id) {
+            loadChatSessions();
+        } else {
+            setChatSessions([]);
+        }
+    }, [isAuthenticated, user?.id]);
 
     // Handle search with debouncing
     useEffect(() => {
+        if (!isAuthenticated || !user?.id) {
+            return;
+        }
+
         const timeoutId = setTimeout(() => {
             if (searchTerm.trim()) {
                 searchChatSessions(searchTerm);
@@ -105,7 +134,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
+    }, [searchTerm, isAuthenticated, user?.id]);
 
     const formatTimestamp = (timestamp: Date) => {
         const now = new Date();
@@ -125,11 +154,21 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
 
     const deleteChat = async (chatId: string, e: React.MouseEvent) => {
         e.stopPropagation();
+
+        const userId = getCurrentUserId();
+        if (!userId) {
+            console.warn('Cannot delete chat: user not authenticated');
+            return;
+        }
+
         try {
-            const userId = getCurrentUserId();
+            console.log('Deleting chat session:', chatId, 'for user:', userId);
             const success = await ChatIaService.deleteChatSession(parseInt(chatId), userId);
             if (success) {
                 setChatSessions(prev => prev.filter(session => session.id !== chatId));
+                console.log('Chat session deleted successfully');
+            } else {
+                console.warn('Failed to delete chat session');
             }
         } catch (error) {
             console.error('Error deleting chat session:', error);
@@ -144,13 +183,20 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
 
     // Expose method to add new chat session
     const addNewChatSession = async (firstMessage: string): Promise<string | null> => {
+        const userId = getCurrentUserId();
+        if (!userId) {
+            console.warn('Cannot create new chat session: user not authenticated');
+            return null;
+        }
+
         try {
-            const userId = getCurrentUserId();
+            console.log('Creating new chat session for user:', userId);
             const newSession = await ChatIaService.createNewChatSession(firstMessage, userId);
 
             const convertedSession = convertToChatSession(newSession);
             if (convertedSession) {
                 setChatSessions(prev => [convertedSession, ...prev]);
+                console.log('New chat session created:', convertedSession.id);
                 return convertedSession.id;
             }
             return null;
@@ -182,7 +228,26 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
             updateChatSession,
             refreshSessions: loadChatSessions
         };
-    }, []);
+    }, [isAuthenticated, user?.id]);
+
+    // Don't render if user is not authenticated
+    if (!isAuthenticated) {
+        return (
+            <div className="chat-history-section">
+                <div className="chat-history-header">
+                    <div className="chat-history-title">
+                        <History size={20} />
+                        {!isCollapsed && <span>Chat History</span>}
+                    </div>
+                </div>
+                {!isCollapsed && (
+                    <div className="no-chats">
+                        Please log in to view chat history
+                    </div>
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="chat-history-section">
