@@ -1,0 +1,71 @@
+.inline-code {
+    background-color: #f1f3f4;
+    border: 1px solid #e8eaed;
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.25rem;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.875em;
+    color: #d73a49;
+}
+.code-block-container {
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.code-block-header {
+    background-color: #e9ecef;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.code-language {
+    font-weight: 500;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.code-copy-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.code-copy-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #495057;
+}
+
+.code-block {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #212529;
+}
+
+.code-block code {
+    background: none;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+    white-space: pre;
+}

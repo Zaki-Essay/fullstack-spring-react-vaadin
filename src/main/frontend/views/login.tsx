@@ -4,8 +4,8 @@ import "./style.css";
 import React from 'react';
 import { Bot, BookOpen, MessageCircle, ArrowRight } from 'lucide-react';
 import {useNavigate} from "react-router";
-import {RegisterForm} from "Frontend/components/register/register-form";
-import {LoginForm} from "Frontend/components/register/login-form";
+import {RegisterForm} from "Frontend/pages/register/register-form";
+import {LoginForm} from "Frontend/pages/register/login-form";
 
 export default function Login() {
     const navigate = useNavigate();

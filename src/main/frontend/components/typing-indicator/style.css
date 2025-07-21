@@ -1,0 +1,36 @@
+.message {
+    display: flex;
+    gap: 1rem;
+    max-width: 85%;
+    animation: slideIn 0.3s ease-out;
+}
+.message.assistant {
+    align-self: flex-start;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.message-avatar.assistant {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1976d2;
+}
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666666;
+    font-size: 0.875rem;
+    padding: 1rem;
+    animation: pulse 1.5s infinite;
+}
+.animate-spin {
+    animation: spin 1s linear infinite;
+}

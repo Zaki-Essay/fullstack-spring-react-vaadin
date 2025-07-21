@@ -1,0 +1,85 @@
+.message {
+    display: flex;
+    gap: 1rem;
+    max-width: 85%;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message.assistant {
+    align-self: flex-start;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.message-avatar.user {
+    background-color: #1976d2;
+    color: white;
+}
+
+.message-avatar.assistant {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1976d2;
+}
+
+.message-content {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    word-wrap: break-word;
+    max-width: 70%;
+}
+
+.message.user .message-content {
+    background-color: rgba(25, 118, 210, 0.1);
+    border-color: rgba(25, 118, 210, 0.5);
+}
+
+.message-text {
+    color: #333333;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+}
+.message-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.message-content:hover .message-actions {
+    opacity: 1;
+}
+
+.copy-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666666;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.copy-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1976d2;
+}

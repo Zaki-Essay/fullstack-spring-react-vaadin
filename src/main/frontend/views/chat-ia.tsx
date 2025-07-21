@@ -1,4 +1,4 @@
-import {LlmChat} from "Frontend/components/chat-ia/llm-chat";
+import {LlmChat} from "Frontend/pages/chat-ia/llm-chat";
 
 export default function  ChatIa() {
 

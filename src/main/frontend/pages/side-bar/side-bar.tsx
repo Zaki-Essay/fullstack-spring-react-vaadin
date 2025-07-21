@@ -14,7 +14,7 @@ import {
     User,
     Users
 } from "lucide-react";
-import {ChatHistory} from "Frontend/components/chat-history/chat-history";
+import {ChatHistory} from "Frontend/pages/chat-history/chat-history";
 import {useAuth} from "Frontend/context/AuthContext";
 import {MenuItem} from "@vaadin/hilla-file-router/types.js";
 import {useNavigate} from "react-router";

@@ -1,5 +1,6 @@
 import React, {useRef, useState} from "react";
 import {Check, Copy} from "lucide-react";
+import "./style.css";
 
 interface CodeBlockProps {
     children: React.ReactNode;

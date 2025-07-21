@@ -1,6 +1,6 @@
 import {NavLink, Outlet} from "react-router-dom";
 import "./style.css";
-import {SideBar} from "Frontend/components/side-bar/side-bar";
+import {SideBar} from "Frontend/pages/side-bar/side-bar";
 import {AuthService} from "Frontend/generated/endpoints";
 import {AuthProvider, useAuth} from "Frontend/context/AuthContext";
 

@@ -1,5 +1,5 @@
-import {LlmChat} from "Frontend/components/chat-ia/llm-chat";
-import RagChat from "Frontend/components/rag-chat/rag-chat";
+import {LlmChat} from "Frontend/pages/chat-ia/llm-chat";
+import RagChat from "Frontend/pages/rag-chat/rag-chat";
 
 export default function  Rag() {
 
